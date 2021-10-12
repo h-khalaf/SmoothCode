@@ -1,0 +1,22 @@
+<main>
+    <div class="container max-w-2xl py-6">
+        <h1 class="border-b text-2xl pb-2 mb-2">Create a new folder</h1>
+        {{> errors}}
+        <form method="POST" class="mt-4 capitalize" action="/create-folder" >
+            <ul> 
+                <li class="relative border-b focus-within:border-green-400">
+                    <label for="folderName" class="block absolute top-2 left-2 text-sm">folder name</label>
+                    <input type="text" id="folderName" name="folderName" autocomplete="off" required 
+                    class="block pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50"
+                    {{#if folderName}}value="{{folderName}}"{{/if}}>
+                </li>
+
+                <li><input type="hidden" name="_csrf" value="{{csrfToken}}"></li>
+                
+                <li class="text-center">
+                    <input type="submit" value="Create" class="rounded inline mt-5 bg-green-500 text-white font-semibold hover:bg-green-700 py-2 px-4">
+                </li>
+            </ul>
+        </form>
+    </div>
+</main>

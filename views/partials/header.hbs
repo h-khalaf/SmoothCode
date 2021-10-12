@@ -1,0 +1,46 @@
+<header class="min-h-14 max-h-full flex items-center border-b bg-gray-50">
+    <div class="container">
+        <div class="uppercase tracking-wide flex items-center justify-between flex-wrap">  
+
+            <!-- Logo -->
+            <a href="/" class="my-1">
+                <img src="/static/img/logo.png" alt="Logo" class="h-12 w-14 mr-1 ">
+            </a>
+
+            <!-- Hamburger menu -->
+            <input type="checkbox" id="hamburger-menu-checkbox" class="hidden">
+            <label for="hamburger-menu-checkbox" class="flex md:hidden h-8 w-8 items-center flex-row-reverse cursor-pointer my-1">
+                <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+            </label>
+    
+            <!-- Nav menu -->
+            <nav class="hidden md:flex md:items-center md:w-auto w-full" id="nav-menu">
+                {{#if isLoggedIn }}
+                {{!-- Dashboard nav --}}
+                <ul class="md:flex items-center justify-between text-sm text-gray-800">
+                    <li><a href="/add-snippet" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="far fa-plus-square fa-lg"></i></i>&nbsp;Add snippet</a></li>
+                    <li><a href="/snippets" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="fa fa-code fa-lg"></i>&nbsp;Snippets</a></li>
+                    <li><a href="/folders" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="far fa-folder fa-lg"></i>&nbsp;Folders</a></li>
+                    <li><a href="/messages" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="far fa-comment-alt fa-lg"></i>&nbsp;Messages</a></li>
+                    <li>
+                        <form method="POST" action="/signout" id="signout">
+                            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                            <button type="submit" form="signout" class="p-2 md:py-4 lg:px-4 block hover:text-green-500 uppercase">
+                                <i class="fas fa-sign-out-alt fa-lg"></i></i>&nbsp;Sign out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                {{else}}
+                {{!-- Normal nav --}}
+                <ul class="md:flex items-center justify-between text-base text-gray-800">
+                    <li><a class="p-2 md:p-4 px-0 block hover:text-green-500" href="/">Home</a></li>
+                    <li><a class="p-2 md:p-4 px-0 block hover:text-green-500" href="/snippets">Snippets</a></li>
+                    <li><a class="p-2 md:p-4 px-0 block hover:text-green-500" href="/folders">Folders</a></li>
+                    <li><a class="p-2 md:p-4 px-0 block hover:text-green-500" href="/contact">Contact us</a></li>   
+                </ul>
+                {{/if}}
+            </nav>
+        </div>
+    </div>
+</header>

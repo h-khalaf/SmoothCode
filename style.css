@@ -1,0 +1,15 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+
+#hamburger-menu-checkbox:checked ~ #nav-menu {
+    display: block;
+}
+
+main {
+    min-height: calc(100vh - 105px); /* 105 is height of header and footer combined */
+    max-height: 100%;
+}

@@ -1,0 +1,41 @@
+<main>
+    <div class="container max-w-2xl py-6">
+        <h1 class="border-b text-2xl pb-2 mb-2">Add a new snippet</h1>
+        {{> errors}}
+        <form method="POST" class="mt-4 capitalize" action="/add-snippet" >
+            <ul> 
+                <li class="relative border-b focus-within:border-green-400">
+                    <label for="title" class="block absolute top-2 left-2 text-sm">Title</label>
+                    <input type="text" id="title" name="title" autocomplete="off" required
+                    class="block pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50"
+                    {{#if title}}value="{{{title}}}"{{/if}}>
+                </li>
+
+                <li class="relative border-b h-16 bg-white">
+                    <label for="folders" class="block absolute text-sm top-2 left-2">Choose a folder</label>
+
+                    <select name="folder" id="folders" class="w-full absolute top-10 ">
+                        <option value="">-- Optional --</option>
+                        {{#if folders}}
+                            {{#each folders}}
+                                <option value="{{this.id}}">{{this.name}}</option>
+                            {{/each}}
+                        {{/if}}
+                    </select>
+                </li>
+
+                <li class="relative border-b focus-within:border-green-400">
+                    <label for="code" class="block absolute top-2 left-2 text-sm w-full focus:bg-gray-50">Code</label>
+                    <textarea name="code" id="code" cols="30" rows="15" 
+                    class="block rounded pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50">{{#if code}}{{{code}}}"{{/if}}</textarea>
+                </li>
+
+                <li><input type="hidden" name="_csrf" value="{{csrfToken}}"></li>
+                
+                <li class="text-center">
+                    <input type="submit" value="Add Snippet" class="rounded inline mt-5 bg-green-500 text-white font-semibold hover:bg-green-700 py-2 px-4">
+                </li>
+            </ul>
+        </form>
+    </div>
+</main>

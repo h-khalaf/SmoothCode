@@ -1,0 +1,15 @@
+<main>
+    <div class="container py-6">
+        
+        <section class="shadow bg-white rounded border border-white focus-within:border-green-500 p-2">
+            <form method="GET" class="flex items-center">
+                <label for="search-input"><i class="fa fa-search fa-lg" aria-hidden="true"></i></label>
+                <input type="text" name="search" id="search-input" autocomplete="off" placeholder="Search here..." class="w-full p-2 focus:outline-none bg-white">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                <input type="submit" value="Search" class="bg-white text-sm rounded p-1 border ">
+            </form>
+        </section>
+
+
+    </div>
+</main>
