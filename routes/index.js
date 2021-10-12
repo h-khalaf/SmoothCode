@@ -12,22 +12,16 @@ mainRouter.get('/' , redirectToDashboardIfLoggedIn, (req, res) => {
     res.render('start.hbs', model)
 })
 
-mainRouter.use(require('./admin.js'))
+mainRouter.use(require('./login.js'))
 mainRouter.use(require('./contact.js'))
 mainRouter.use(require('./dashboard.js'))
 mainRouter.use(require('./folder.js'))
 mainRouter.use(require('./snippet.js'))
 
-
-// 404 Error page
-mainRouter.get('/404', (req, res) => {
-    const model = { pageTitle: ERROR_404_PAGE_TTITLE }
-    res.status(404).render('404.hbs', model)
-})
-
 // Capture 404 errors (Must be last route)
 mainRouter.use((req, res) => {
-    res.redirect('/404')
+    const model = { pageTitle: ERROR_404_PAGE_TTITLE }
+    res.status(404).render('404.hbs', model)
 })
 
 module.exports = mainRouter

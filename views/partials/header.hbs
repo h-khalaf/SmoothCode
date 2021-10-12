@@ -23,9 +23,9 @@
                     <li><a href="/folders" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="far fa-folder fa-lg"></i>&nbsp;Folders</a></li>
                     <li><a href="/messages" class="p-2 md:py-4 lg:px-4 block hover:text-green-500"><i class="far fa-comment-alt fa-lg"></i>&nbsp;Messages</a></li>
                     <li>
-                        <form method="POST" action="/signout" id="signout">
+                        <form method="POST" action="/logout" id="logout">
                             <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                            <button type="submit" form="signout" class="p-2 md:py-4 lg:px-4 block hover:text-green-500 uppercase">
+                            <button type="submit" form="logout" class="p-2 md:py-4 lg:px-4 block hover:text-green-500 uppercase">
                                 <i class="fas fa-sign-out-alt fa-lg"></i></i>&nbsp;Sign out
                             </button>
                         </form>

@@ -1,21 +1,15 @@
-const csrfProtection = require('csurf')({cookie: true}),
 dashboardRouter = require('express').Router(),
 { redirectIfNotLoggedIn, highlightCode } = require('../utilities.js'),
-hljs = require('highlight.js'),
 db = require('../database/dbmanager.js'),
 { validationResult } = require('express-validator'),
 validator = require('../validator.js'),
 
-DASHBOARD_PAGE_TILE = 'Dashboard',
-SNIPPETS_PAGE_TITLE = 'Snippets',
-ADD_SNIPPET_PAGE_TITLE = 'Add Snippet',
-EDIT_SNIPPET_PAGE_TITLE = 'Edit Snippet',
-CREATE_FOLDER_PAGE_TITLE = 'Create Folder',
-EDIT_FOLDER_PAGE_TITLE = 'Edit Category'
+DASHBOARD_PAGE_TITLE = 'Dashboard',
+MESSAGES_PAGE_TITLE = 'Messages'
 
 dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
-        pageTitle: DASHBOARD_PAGE_TILE,
+        pageTitle: DASHBOARD_PAGE_TITLE,
         errors: []
     }
 

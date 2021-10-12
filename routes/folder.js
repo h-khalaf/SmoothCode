@@ -25,7 +25,7 @@ folderRouter.get('/folders', async (req, res) => {
     }
 })
 
-folderRouter.get('/folder/:id', validator.paramIdEscaping, async (req, res) => {
+folderRouter.get('/folder/:id', async (req, res) => {
     const model = {
         errors: []
     },
@@ -33,7 +33,7 @@ folderRouter.get('/folder/:id', validator.paramIdEscaping, async (req, res) => {
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.redirect('/404') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
 
         model.folder = folder
         model.pageTitle = folder.name
@@ -74,7 +74,7 @@ folderRouter.post('/create-folder', redirectIfNotLoggedIn, validator.folderCreat
         }
 })
 
-folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, validator.paramIdEscaping, async (req, res) => {
+folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
         pageTitle: EDIT_FOLDER_PAGE_TITLE,
         errors: [] 
@@ -82,7 +82,7 @@ folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, validator.paramIdEsc
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.redirect('/404') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
 
         model.folder = folder
         res.render('edit-folder.hbs', model)
@@ -121,7 +121,7 @@ folderRouter.post('/edit-folder', redirectIfNotLoggedIn, validator.folderUpdateV
 })
 
 
-folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, validator.paramIdEscaping, async (req, res) => {
+folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_FOLDER_PAGE_TITLE,
         errors: []
@@ -129,7 +129,7 @@ folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, validator.paramIdE
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.redirect('/404') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
         
         model.folder = folder
         res.render('delete-folder.hbs', model)
@@ -139,7 +139,7 @@ folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, validator.paramIdE
     }
 })
 
-folderRouter.post('/delete-folder', redirectIfNotLoggedIn, validator.bodyIdEscaping, async (req, res) => {
+folderRouter.post('/delete-folder', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_FOLDER_PAGE_TITLE,
         errors: []

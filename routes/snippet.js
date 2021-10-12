@@ -72,7 +72,7 @@ snippetRouter.post('/add-snippet', redirectIfNotLoggedIn, validator.snippetValid
     }
 })
 
-snippetRouter.get('/snippet/:id', validator.paramIdEscaping, async (req, res) => {
+snippetRouter.get('/snippet/:id', async (req, res) => {
     const model = {
         pageTitle: SNIPPET_DEFAULT_PAGE_TITLE, // If no error occurs, page title will be title of the code snippet
         errors: []
@@ -80,7 +80,7 @@ snippetRouter.get('/snippet/:id', validator.paramIdEscaping, async (req, res) =>
     snippetId = req.params.id
     try {
         const snippet = await db.snippets.getSnippet(snippetId)
-        if (snippet === undefined) return res.redirect('/404') // Snippet does not exists
+        if (snippet === undefined) return res.render('404.hbs') // Snippet does not exists
 
         model.pageTitle = snippet.title // Page title changed here...
         model.snippet = snippet
@@ -93,7 +93,7 @@ snippetRouter.get('/snippet/:id', validator.paramIdEscaping, async (req, res) =>
     }
 })
 
-snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, validator.paramIdEscaping, async (req, res) => {
+snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: EDIT_SNIPPET_PAGE_TITLE,
         errors: []
@@ -101,7 +101,7 @@ snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, validator.paramIdE
     snippetId = req.params.id
     try {
         const snippet = await db.snippets.getSnippet(snippetId)
-        if (snippet === undefined) return res.redirect('/404') // Snippet does not exists
+        if (snippet === undefined) return res.render('404.hbs') // Snippet does not exists
         
         model.folders = await db.folders.getAllFolders()
         model.snippet = snippet

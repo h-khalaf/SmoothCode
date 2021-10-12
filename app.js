@@ -18,12 +18,6 @@ app = express()
 
 db
 
-const d = async () => {
-    await db.snippets.insertSnippet('func','L\nLOREM\nIPSUM\nLA\nLA\nTESTING\nLINES\nDA\nDA\nDA\nDA\NL\nLOREM\nIPSUM\nLA\nLA\nTESTING\nLINES\nDA\nDA\nDA\nDA\n')
-}
-
-//d()
-
 // Urlencode middleware (for POST requests)
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))

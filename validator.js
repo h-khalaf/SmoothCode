@@ -1,4 +1,4 @@
-const { param, body } = require('express-validator'),
+const { body } = require('express-validator'),
 
 SNIPPET_TITLE_MAX_LENGTH = 255,
 SNIPPET_CODE_MAX_LENGTH = 5000,
@@ -30,14 +30,6 @@ exports.folderUpdateValidation = [
         .bail().isLength({min: FOLDER_MIN_LENGTH, max: FOLDER_MAX_LENGTH})
             .withMessage(`Folder name must be between ${FOLDER_MIN_LENGTH} and ${FOLDER_MAX_LENGTH} characters`).trim().escape(),
     body('folderId').notEmpty().withMessage('Folder id is required').trim().escape()
-]
-
-exports.bodyIdEscaping = [
-    body('id').trim().escape()
-]
-
-exports.paramIdEscaping = [
-    param('id').trim().escape()
 ]
 
 exports.contactValidation = [
