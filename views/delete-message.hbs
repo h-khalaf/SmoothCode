@@ -1,0 +1,13 @@
+<main>
+    <div class="container max-w-2xl py-6">
+        <h1 class="border-b text-2xl text-center pb-2 mb-2">
+            Are you sure you want to delete message <span class="text-blue-500">#{{message.id}}</span>? 
+        </h1>
+        {{> errors}}
+        <form method="POST" class="mt-4 text-center" action="/delete-message" >
+            <input type="hidden" name="id" value="{{message.id}}">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <input type="submit" value="Delete" class="rounded inline bg-red-500 text-white font-semibold hover:bg-red-700 py-2 px-4">
+        </form>
+    </div>
+</main>

@@ -46,6 +46,19 @@ module.exports = class Messages {
         })
     }
 
+    deleteMessage(id) {
+        return new Promise((resolve, reject) => {
+            // sql & params
+            const sql = `DELETE FROM Messages WHERE id = ?`,
+                params = [id]
+    
+            this.db.run(sql, params, (error) => {
+                if (error) reject('Internal Server Error')
+                resolve('Message successfully deleted')
+            })
+        })
+    }
+
     countMessages() {
         return new Promise((resolve, reject) => {
             // query

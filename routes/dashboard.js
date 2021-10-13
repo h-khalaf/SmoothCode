@@ -1,11 +1,13 @@
-dashboardRouter = require('express').Router(),
-{ redirectIfNotLoggedIn, highlightCode } = require('../utilities.js'),
+const dashboardRouter = require('express').Router(),
+hljs  = require('highlight.js'),
+{ redirectIfNotLoggedIn } = require('../utilities.js'),
 db = require('../database/dbmanager.js'),
-{ validationResult } = require('express-validator'),
-validator = require('../validator.js'),
 
 DASHBOARD_PAGE_TITLE = 'Dashboard',
-MESSAGES_PAGE_TITLE = 'Messages'
+MESSAGES_PAGE_TITLE = 'Messages',
+DEFAULT_MESSAGE_PAGE_TITLE = 'Message',
+DELETE_MESSAGE_PAGE_TITLE = 'Delete message',
+MESSAGE_NOT_FOUND_TITLE = 'Message not found'
 
 dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
@@ -14,23 +16,17 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
     }
 
     try {
-        const snippetsCount = await db.snippets.countSnippets(),
-        foldersCount = await db.folders.countFolders(),
-        messagesCount = await db.messages.countMessages(),
-        lastestCodeSnippet = await db.snippets.getLatestSnippet(),
-        folders = await db.folders.getAllFolders()
+        const snippets = await db.snippets.countSnippets(),
+        folders = await db.folders.countFolders(),
+        messages = await db.messages.countMessages(),
+        lastestCodeSnippet = await db.snippets.getLatestSnippet()
         
-        model.snippetsCount = snippetsCount.count
-        model.foldersCount = foldersCount.count
-        model.messagesCount = messagesCount.count
+        model.snippetsCount = snippets.count
+        model.foldersCount = folders.count
+        model.messagesCount = messages.count
         model.lastestCodeSnippet = lastestCodeSnippet
-        model.folders = folders
-
-        if(categories.postDate !== categories.lastModified)
-            model.categories.edited = true
-
-
-        highlightCode(model.code)
+        // Overwriting the code with the highlighted code
+        model.lastestCodeSnippet.code = hljs.highlightAuto(lastestCodeSnippet.code).value 
 
         res.render('dashboard.hbs', model)
     } catch (error) {
@@ -39,6 +35,69 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
     }    
 })
 
+dashboardRouter.get('/messages', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: MESSAGES_PAGE_TITLE,
+        errors: []
+    }
 
+    try {
+        model.messages = await db.messages.getAllMessages()
+        res.render('messages.hbs', model)
+    } catch (error) {
+        model.errors.push(error)
+        res.render('messages.hbs', model)
+    }
+})
+
+dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: DEFAULT_MESSAGE_PAGE_TITLE,
+        errors: []
+    },
+    messageId = req.params.id
+
+    try {
+        const message = await db.messages.getMessage(messageId)
+        if (message === undefined) return res.render('404.hbs', {pageTitle: MESSAGE_NOT_FOUND_TITLE})
+    } catch (error) {
+        model.errors.push(error)
+        res.render('message.hbs', model)
+    }
+})
+
+dashboardRouter.get('/delete-message/:id', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: DELETE_MESSAGE_PAGE_TITLE,
+        errors: []
+    },
+    messageId = req.params.id
+    try {
+        const message = await db.messages.getMessage(messageId)
+        if(message === undefined) return res.render('404.hbs', {pageTitle: MESSAGE_NOT_FOUND_TITLE}) 
+        
+        model.message = message
+        res.render('delete-message.hbs', model)
+    } catch (error) {
+        model.errors.push(error)
+        res.render('delete-message.hbs', model)
+    }
+})
+
+dashboardRouter.post('/delete-message', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: DELETE_MESSAGE_PAGE_TITLE,
+        errors: []
+    },
+    messageId = req.body.id
+    
+    try {
+        await db.messages.deleteMessage(messageId)
+        res.redirect('/dashboard')
+    } catch (error) {
+        model.errors.push(error)
+        res.render('delete-message.hbs', model)
+    }
+})
 
 module.exports = dashboardRouter

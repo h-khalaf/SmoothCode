@@ -1,5 +1,26 @@
 <main>
     <div class="container py-6">
-        
+        {{> errors}}
+        <h1 class="text-4xl p-2 mb-2 border-b">Messages</h1>
+            {{#if messages.length}}
+            <ul>
+                {{#each messages}}
+                <li class="shadow bg-white rounded p-2 mb-2">
+                    <div class="flex justify-between items-center">
+                        <a href="#{{this.id}}" class="text-blue-500">#{{this.id}}</a>
+                        <a href="/delete-message/{{this.id}}" class="rounded p-2 mr-1 bg-red-500 text-white ">Delete</a>
+                    </div>
+                    
+                    <p class="my-2">{{this.message}}</p>
+                    <p class="text-sm mt-6"><b>By: </b>{{this.name}}
+                        <span>&nbsp;(<a class="underline text-blue-500 overflow-x-auto" href="mailto:{{this.email}}">{{this.email}}</a>)</span>
+                    </p>
+                    <p class="text-sm my-1"><b>Date: </b><time datetime="{{this.postDate}}">{{this.postDate}}</time></p>
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <p class="my-6 text-2xl text-center">No messages sent yet</p>
+            {{/if}}
     </div>
 </main>
