@@ -2,7 +2,7 @@ const mainRouter = require('express').Router(),
 { redirectToDashboardIfLoggedIn } = require('../utilities.js'),
 
 INDEX_PAGE_TITLE = 'Home',
-ERROR_404_PAGE_TTITLE = 'Page Not Found'
+ERROR_PAGE_TTITLE = 'Page Not Found'
 
 // Route handlers
 
@@ -20,7 +20,7 @@ mainRouter.use(require('./snippet.js'))
 
 // Capture 404 errors (Must be last route)
 mainRouter.use((req, res) => {
-    const model = { pageTitle: ERROR_404_PAGE_TTITLE }
+    const model = { pageTitle: ERROR_PAGE_TTITLE }
     res.status(404).render('404.hbs', model)
 })
 

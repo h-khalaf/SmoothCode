@@ -9,7 +9,8 @@ SNIPPETS_PAGE_TITLE = 'Snippets',
 SNIPPET_DEFAULT_PAGE_TITLE = 'Snippet',
 ADD_SNIPPET_PAGE_TITLE = 'Add Snippet',
 EDIT_SNIPPET_PAGE_TITLE = 'Edit Snippet',
-DELETE_SNIPPET_PAGE_TITKE = 'Delete Snippet'
+DELETE_SNIPPET_PAGE_TITLE = 'Delete Snippet',
+SNIPPET_NOT_FOUND_TITLE = 'Snippet not found'
 
 snippetRouter.get('/snippets', async (req, res) => { 
     const model = { 
@@ -80,7 +81,7 @@ snippetRouter.get('/snippet/:id', async (req, res) => {
     snippetId = req.params.id
     try {
         const snippet = await db.snippets.getSnippet(snippetId)
-        if (snippet === undefined) return res.render('404.hbs') // Snippet does not exists
+        if (snippet === undefined) return res.render('404.hbs', {pageTitle: SNIPPET_NOT_FOUND_TITLE})
 
         model.pageTitle = snippet.title // Page title changed here...
         model.snippet = snippet
@@ -101,7 +102,7 @@ snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, async (req, res) =
     snippetId = req.params.id
     try {
         const snippet = await db.snippets.getSnippet(snippetId)
-        if (snippet === undefined) return res.render('404.hbs') // Snippet does not exists
+        if (snippet === undefined) return res.render('404.hbs', {pageTitle: SNIPPET_NOT_FOUND_TITLE})
         
         model.folders = await db.folders.getAllFolders()
         model.snippet = snippet

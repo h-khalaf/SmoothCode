@@ -7,7 +7,8 @@ validator = require('../validator.js')
 FOLDERS_PAGE_TITLE = 'Folders',
 CREATE_FOLDER_PAGE_TITLE = 'Create Folder',
 EDIT_FOLDER_PAGE_TITLE = 'Edit Folder',
-DELETE_FOLDER_PAGE_TITLE = 'Delete Folder'
+DELETE_FOLDER_PAGE_TITLE = 'Delete Folder',
+FOLDER_NOT_FOUND_TITLE = 'Folder not found'
 
 folderRouter.get('/folders', async (req, res) => {
     const model = {
@@ -33,7 +34,7 @@ folderRouter.get('/folder/:id', async (req, res) => {
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs', {pageTitle: FOLDER_NOT_FOUND_TITLE})
 
         model.folder = folder
         model.pageTitle = folder.name
@@ -82,7 +83,7 @@ folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, async (req, res) => 
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs', {pageTitle: FOLDER_NOT_FOUND_TITLE})
 
         model.folder = folder
         res.render('edit-folder.hbs', model)
@@ -129,7 +130,7 @@ folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, async (req, res) =
     folderId = req.params.id
     try {
         const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.render('404.hbs') // Folder does not exist
+        if(folder === undefined) return res.render('404.hbs', {pageTitle: FOLDER_NOT_FOUND_TITLE}) 
         
         model.folder = folder
         res.render('delete-folder.hbs', model)
