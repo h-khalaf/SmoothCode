@@ -12,34 +12,34 @@ CONTACT_MESSAGE_MAX_LENGTH = 250
 exports.snippetValidation = [
     body('title').notEmpty().withMessage('Title is required')
     .bail().isLength({max: SNIPPET_TITLE_MAX_LENGTH})
-        .withMessage(`Title cannot be longer than ${SNIPPET_TITLE_MAX_LENGTH} characters`).trim().escape(),
-    body('folder').trim().escape(),
+        .withMessage(`Title cannot be longer than ${SNIPPET_TITLE_MAX_LENGTH} characters`).trim(),
+    body('folder').trim(),
     body('code').notEmpty().withMessage('Code is required')
         .bail().isLength({max: SNIPPET_CODE_MAX_LENGTH})
-            .withMessage(`Code cannot be longer than ${SNIPPET_CODE_MAX_LENGTH} characters`).trim().escape()
+            .withMessage(`Code cannot be longer than ${SNIPPET_CODE_MAX_LENGTH} characters`).trim()
 ]
 
 exports.folderCreateValidation = [
     body('folderName').notEmpty().withMessage('Folder name is required')
         .bail().isLength({min: FOLDER_MIN_LENGTH, max: FOLDER_MAX_LENGTH})
-            .withMessage(`Folder name must be between ${FOLDER_MIN_LENGTH} and ${FOLDER_MAX_LENGTH} characters`).trim().escape()
+            .withMessage(`Folder name must be between ${FOLDER_MIN_LENGTH} and ${FOLDER_MAX_LENGTH} characters`).trim()
 ]
 
 exports.folderUpdateValidation = [
     body('folderName').notEmpty().withMessage('Folder name is required')
         .bail().isLength({min: FOLDER_MIN_LENGTH, max: FOLDER_MAX_LENGTH})
-            .withMessage(`Folder name must be between ${FOLDER_MIN_LENGTH} and ${FOLDER_MAX_LENGTH} characters`).trim().escape(),
-    body('folderId').notEmpty().withMessage('Folder id is required').trim().escape()
+            .withMessage(`Folder name must be between ${FOLDER_MIN_LENGTH} and ${FOLDER_MAX_LENGTH} characters`).trim(),
+    body('folderId').notEmpty().withMessage('Folder id is required').trim()
 ]
 
 exports.contactValidation = [
     body('name').notEmpty().withMessage('Name is required')
         .bail().isLength({max: CONTACT_NAME_MAX_LENGTH})
-            .withMessage(`Name Cannot be longer than ${CONTACT_NAME_MAX_LENGTH} characters`).trim().escape(),
+            .withMessage(`Name Cannot be longer than ${CONTACT_NAME_MAX_LENGTH} characters`).trim(),
     body('email').notEmpty().withMessage('Email is required')
-        .bail().isLength({max: CONTACT_EMAIL_MAX_LENGTH}).withMessage(`Email cannot be longer than ${CONTACT_EMAIL_MAX_LENGTH} characters`).trim().escape()
-        .bail().isEmail().normalizeEmail().withMessage('Email is invalid').trim().escape(),
+        .bail().isLength({max: CONTACT_EMAIL_MAX_LENGTH}).withMessage(`Email cannot be longer than ${CONTACT_EMAIL_MAX_LENGTH} characters`).trim()
+        .bail().isEmail().normalizeEmail().withMessage('Email is invalid').trim(),
     body('message').notEmpty().withMessage('Message is required')
         .bail().isLength({min: CONTACT_MESSAGE_MIN_LENGTH, max: CONTACT_MESSAGE_MAX_LENGTH})
-            .withMessage(`Message must be between ${CONTACT_MESSAGE_MIN_LENGTH} and ${CONTACT_MESSAGE_MAX_LENGTH} characters`).trim().escape()
+            .withMessage(`Message must be between ${CONTACT_MESSAGE_MIN_LENGTH} and ${CONTACT_MESSAGE_MAX_LENGTH} characters`).trim()
 ]
