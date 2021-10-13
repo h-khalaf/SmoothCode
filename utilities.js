@@ -1,5 +1,3 @@
-const hljs = require('highlight.js')
-
 // Functions & middlewares
 
 function redirectIfNotLoggedIn (req, res, next) {
@@ -20,10 +18,6 @@ function baseModel (req, res, next) {
     next()
 }
 
-function highlightCode(code) {
-    code = hljs.highlightAuto(code).value
-}
-
 function keepFirstLetters(string, maxLineCharacters) {
     if(string.length > maxLineCharacters) {
         return string.substring(0, maxLineCharacters-3) + '...'
@@ -42,7 +36,6 @@ module.exports = {
     redirectIfNotLoggedIn,
     redirectToDashboardIfLoggedIn,
     baseModel,
-    highlightCode,
     keepFirstLetters,
     keepFirstLettersObjectArray
 }
