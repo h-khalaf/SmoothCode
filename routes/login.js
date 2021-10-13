@@ -2,7 +2,9 @@ const loginRouter = require('express').Router(),
 bcrypt = require('bcrypt'),
 { redirectToDashboardIfLoggedIn } = require('../utilities.js'),
 
-LOGIN_PAGE_TITLE = 'Sign in'
+LOGIN_PAGE_TITLE = 'Sign in',
+USERNAME = 'admin',
+HASHED_PASSWORD = '$2b$10$t6RIOzAucOJ1PNkrkw/..uIo3xruZBZoaeF85x0PZ0m9bRA6J6Bk2'
 
 loginRouter.get('/login', redirectToDashboardIfLoggedIn, (req, res) => {
     const model = { pageTitle: LOGIN_PAGE_TITLE }
@@ -16,18 +18,17 @@ loginRouter.post('/login', redirectToDashboardIfLoggedIn, async (req, res) =>{
         pageTitle: LOGIN_PAGE_TITLE,
         errors: []
     },
-    { username, password } = req.body,
-    hashedPassword = '$2b$10$t6RIOzAucOJ1PNkrkw/..uIo3xruZBZoaeF85x0PZ0m9bRA6J6Bk2'
+    {username, password} = req.body
 
     let passwordMatchesWithHash = false;
     try {
-        passwordMatchesWithHash = await bcrypt.compare(password, hashedPassword)
+        passwordMatchesWithHash = await bcrypt.compare(password, HASHED_PASSWORD)
     } catch (error) {
         model.errors.push('Internal Server Error')
         res.render ('login.hbs', model)
     }
 
-    if(username.toLowerCase() == 'admin' && passwordMatchesWithHash) {
+    if(username.toLowerCase() == USERNAME && passwordMatchesWithHash) {
         req.session.isLoggedIn = true
         res.redirect('/dashboard')
     } else {

@@ -8,7 +8,7 @@
                     <label for="title" class="block absolute top-2 left-2 text-sm">Title</label>
                     <input type="text" id="title" name="title" autocomplete="off" required
                     class="block pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50"
-                    {{#if title}}value="{{{title}}}"{{/if}}>
+                    {{#if title}}value="{{title}}"{{/if}}>
                 </li>
 
                 <li class="relative border-b h-16 bg-white">
@@ -27,7 +27,7 @@
                 <li class="relative border-b focus-within:border-green-400">
                     <label for="code" class="block absolute top-2 left-2 text-sm w-full focus:bg-gray-50">Code</label>
                     <textarea name="code" id="code" cols="30" rows="15" 
-                    class="block rounded pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50">{{#if code}}{{{code}}}"{{/if}}</textarea>
+                    class="block rounded pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50">{{#if code}}{{code}}"{{/if}}</textarea>
                 </li>
 
                 <li><input type="hidden" name="_csrf" value="{{csrfToken}}"></li>

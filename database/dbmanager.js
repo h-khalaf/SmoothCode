@@ -22,4 +22,4 @@ class Database {
     }
 }
 
-module.exports = new Database('codeManager.db')
+module.exports = new Database('smoothcode.db')

@@ -10,13 +10,11 @@ csrfProtection = require('csurf')({cookie: true}),
 
 // Files
 routes = require('./routes'),
-db = require('./database/dbmanager.js'),
 { baseModel } = require('./utilities.js'),
 
 PORT = 8080,
 app = express()
-
-db
+require('./database/dbmanager.js')
 
 // Urlencode middleware (for POST requests)
 app.use(express.json())
@@ -42,7 +40,6 @@ app.use(
         secret: randomString.generate(),
         resave: false,
         saveUninitialized: false,
-        cookie: {}, // By default, maxAge has no maximum age.
         store: new SQLiteStore({db: 'sessions.db'})
     })
 )
