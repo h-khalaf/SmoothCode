@@ -14,7 +14,20 @@ routes = require('./routes'),
 
 PORT = 8080,
 app = express()
-require('./database/dbmanager.js')
+const db = require('./database/dbmanager.js')
+
+
+// Adds hljs languages to the db table
+const insertCommonLanguages = async () => {
+    try {
+        const result = await db.languages.insertCommonLanguages()
+        console.log(result)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+insertCommonLanguages()
 
 // Urlencode middleware (for POST requests)
 app.use(express.json())

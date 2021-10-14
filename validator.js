@@ -7,7 +7,9 @@ FOLDER_MAX_LENGTH = 15,
 CONTACT_NAME_MAX_LENGTH = 25,
 CONTACT_EMAIL_MAX_LENGTH = 250,
 CONTACT_MESSAGE_MIN_LENGTH = 10,
-CONTACT_MESSAGE_MAX_LENGTH = 250
+CONTACT_MESSAGE_MAX_LENGTH = 250,
+LANGUAGE_MIN_LENGTH = 2,
+LANGUAGE_MAX_LENGTH = 12
 
 exports.snippetValidation = [
     body('title').notEmpty().withMessage('Title is required')
@@ -42,4 +44,17 @@ exports.contactValidation = [
     body('message').notEmpty().withMessage('Message is required')
         .bail().isLength({min: CONTACT_MESSAGE_MIN_LENGTH, max: CONTACT_MESSAGE_MAX_LENGTH})
             .withMessage(`Message must be between ${CONTACT_MESSAGE_MIN_LENGTH} and ${CONTACT_MESSAGE_MAX_LENGTH} characters`).trim()
+]
+
+exports.addLanguageValidation = [
+    body('language').notEmpty().withMessage('Language is required')
+        .bail().isLength({min: LANGUAGE_MIN_LENGTH, max: LANGUAGE_MAX_LENGTH})
+            .withMessage(`Language must be between ${LANGUAGE_MIN_LENGTH} and ${LANGUAGE_MAX_LENGTH} characters`).toLowerCase().trim()
+]
+
+exports.languageUpdateValidation = [
+    body('languageName').notEmpty().withMessage('Language is required')
+        .bail().isLength({min: LANGUAGE_MIN_LENGTH, max: LANGUAGE_MAX_LENGTH})
+            .withMessage(`Language must be between ${LANGUAGE_MIN_LENGTH} and ${LANGUAGE_MAX_LENGTH} characters`).trim(),
+    body('languageId').notEmpty().withMessage('language id is required').trim()
 ]

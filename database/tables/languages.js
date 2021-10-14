@@ -40,6 +40,20 @@ module.exports = class Languages {
         })
     }
 
+    languageIsAvailable(name) {
+        return new Promise((resolve, reject) => {
+            // query & param
+            const query = `SELECT * FROM Languages WHERE name = ?`,
+                param = [name]
+            
+            this.db.all(query, param, (error, result) => {
+                if (error) reject('Internal Server Error')
+                if (result.length > 0) resolve(false)
+                else resolve(true)
+            })
+        })
+    }
+
     getLanguage(id) {
         return new Promise((resolve, reject) => {
             // query & param
@@ -82,10 +96,10 @@ module.exports = class Languages {
         return new Promise((resolve, reject) => {
             // sql & param
             const sql = `DELETE FROM Languages WHERE id = ?`,
-                params = [id]
+                param = [id]
     
-            this.db.run(sql, params, (error) => {
-                if (error) reject('Internal Server Error')
+            this.db.run(sql, param, (error) => {
+                if (error) reject('Internal Server Error', error)
                 resolve('Language successfully deleted')
             })
         })

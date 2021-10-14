@@ -127,6 +127,19 @@ module.exports = class Snippets {
         })
     }
 
+    setSnippetsLanguageToNull(languageId) {
+        return new Promise((resolve, reject) => {
+            // sql & param
+            const sql = `UPDATE Snippets SET languageId = NULL, lastModified = DateTime('NOW') WHERE languageId = ?`,
+                param = [languageId]
+            
+            this.db.run(sql, param, (error) => {
+                if (error) reject('Internal Server Error')
+                resolve('Updated snippets language')
+            })
+        })
+    }
+
     countSnippets() {
         return new Promise((resolve, reject) => {
             // query
