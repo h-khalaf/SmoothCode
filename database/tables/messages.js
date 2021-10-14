@@ -35,11 +35,11 @@ module.exports = class Messages {
 
     getMessage(id) {
         return new Promise((resolve, reject) => {
-            // query & params
+            // query & param
             const query = `SELECT * FROM Messages WHERE id = ?`,
-                params = [id]
+                param = [id]
             
-            this.db.get(query, params, (error, row) => {
+            this.db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -48,11 +48,11 @@ module.exports = class Messages {
 
     deleteMessage(id) {
         return new Promise((resolve, reject) => {
-            // sql & params
+            // sql & param
             const sql = `DELETE FROM Messages WHERE id = ?`,
-                params = [id]
+                param = [id]
     
-            this.db.run(sql, params, (error) => {
+            this.db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Message successfully deleted')
             })

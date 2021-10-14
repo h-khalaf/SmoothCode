@@ -8,11 +8,11 @@ module.exports = class Categories {
 
     createFolder(name) {
         return new Promise((resolve, reject) => {
-            // sql & params
+            // sql & param
             const sql = `INSERT INTO Folders (name) VALUES (?)`,
-                params = [name]
+                param = [name]
             
-            this.db.run(sql, params, (error) => {
+            this.db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Folder successfully created')
             })
@@ -21,11 +21,11 @@ module.exports = class Categories {
 
     getFolder(id) {
         return new Promise((resolve, reject) => {
-            // query & params
+            // query & param
             const query = `SELECT * FROM Folders WHERE id = ?`,
-                params = [id]
+                param = [id]
             
-            this.db.get(query, params, (error, row) => {
+            this.db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -34,7 +34,7 @@ module.exports = class Categories {
 
     getAllFolders() {
         return new Promise((resolve, reject) => {
-            // query & params
+            // query
             const query = `SELECT F.id AS id, F.name AS name, 
                 (SELECT COUNT(id) FROM Snippets WHERE folderId =  F.id) AS snippetsCount 
                 FROM Folders F`
@@ -61,11 +61,11 @@ module.exports = class Categories {
 
     deleteFolder(id) {
         return new Promise((resolve, reject) => {
-            // sql & params
+            // sql & param
             const sql = `DELETE FROM Folders WHERE id = ?`,
-                params = [id]
+                param = [id]
     
-            this.db.run(sql, params, (error) => {
+            this.db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Folder successfully deleted')
             })

@@ -32,11 +32,18 @@ function keepFirstLettersObjectArray (arrayOfObjects, key, maxLineCharacters) {
         arrObject[key] = keepFirstLetters(arrObject[key], maxLineCharacters)
 }
 
+function isSnippetModified (snippet) {
+    if (snippet.postDate !== snippet.lastModified)
+        return true
+    return false
+}
+
 
 module.exports = {
     redirectIfNotLoggedIn,
     redirectToDashboardIfLoggedIn,
     baseModel,
     keepFirstLetters,
-    keepFirstLettersObjectArray
+    keepFirstLettersObjectArray,
+    isSnippetModified
 }

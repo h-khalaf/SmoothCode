@@ -2,7 +2,7 @@ const snippetRouter = require('express').Router(),
 { validationResult } = require('express-validator'),
 db = require('../database/dbmanager.js'),
 validator = require('../validator.js'),
-{ redirectIfNotLoggedIn } = require('../utilities.js'),
+{ redirectIfNotLoggedIn, isSnippetModified } = require('../utilities.js'),
 hljs  = require('highlight.js'),
 
 SNIPPETS_PAGE_TITLE = 'Snippets',
@@ -85,8 +85,10 @@ snippetRouter.get('/snippet/:id', async (req, res) => {
 
         model.pageTitle = snippet.title // Page title changed here...
         model.snippet = snippet
-        
-        // Overwriting the code with the highlighted code
+        model.snippet.language = 'JS'
+        if(isSnippetModified(snippet)) model.modified = true // if modified display last modified date in hbs file
+
+        // Overwriting the code with the highlighted code   
         model.snippet.code = hljs.highlightAuto(snippet.code).value
         res.render('snippet.hbs', model)
     } catch (error) {

@@ -19,14 +19,19 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
         const snippets = await db.snippets.countSnippets(),
         folders = await db.folders.countFolders(),
         messages = await db.messages.countMessages(),
-        lastestCodeSnippet = await db.snippets.getLatestSnippet()
-        
+        latestCodeSnippet = await db.snippets.getLatestSnippet(),
+        languages = await db.languages.getAllLanguages()
+
         model.snippetsCount = snippets.count
         model.foldersCount = folders.count
         model.messagesCount = messages.count
-        model.lastestCodeSnippet = lastestCodeSnippet
-        // Overwriting the code with the highlighted code
-        model.lastestCodeSnippet.code = hljs.highlightAuto(lastestCodeSnippet.code).value 
+        model.languages = languages
+
+        if (latestCodeSnippet !== undefined) { // If not empty
+            model.latestCodeSnippet = latestCodeSnippet
+            // Overwriting the code with the highlighted code
+            model.latestCodeSnippet.code = hljs.highlightAuto(latestCodeSnippet.code).value 
+        }
 
         res.render('dashboard.hbs', model)
     } catch (error) {

@@ -18,26 +18,49 @@
             </div>
         </section>
 
-        <section class="mt-6 shadow rounded bg-white ">
+        <section class="mt-6 shadow rounded bg-white">
             <header class="capitalize p-2 mb-2 border-b">
                 <h2 class="text-xl ">Latest code snippet</h2>
             </header>
-            {{#if lastestCodeSnippet}}
-            <figure>
-                <figcaption class="text-lg p-2 mb-2">{{{lastestCodeSnippet.title}}}</figcaption>
-                <p class="pl-2 text-sm capitalize">
-                    <strong>Date:&nbsp;</strong>
-                    <time>{{lastestCodeSnippet.lastModified}}</time>
-                    {{#if lastestCodeSnippet.edited}}&nbsp;<span>(Edited)</span>{{/if}}
-                </p>
-                <pre class="overflow-x-auto px-2">
-                    <code>
-                        {{{lastestCodeSnippet.code}}}
-                    </code>
+            {{#if latestCodeSnippet}}
+             <article class="p-2">
+                <header class="mb-2 flex flex-wrap items-center justify-between">
+                    <h3 class="text-lg">{{latestCodeSnippet.title}}</h3>
+                    <p class="text-sm p-1 border border-solid">JS</p> 
+                </header>
+                <pre class="overflow-x-auto p-2">
+                    <code>{{{latestCodeSnippet.code}}}</code>
                 </pre>
-            </figure>
+                {{#if modified}}
+                <p class="text-sm"><b>Last Edited: </b><time datetime="{{latestCodeSnippet.lastModified}}">{{latestCodeSnippet.lastModified}}</time></p>
+                {{else}}
+                <p class="text-sm"><b>Post Date: </b><time datetime="{{latestCodeSnippet.postDate}}">{{latestCodeSnippet.postDate}}</time></p>
+                {{/if}}
+            </article>
             {{else}}
                 <p class="p-2 mb-2">No snippets found. Create your first code snippet by <a href="/add-snippet" class="text-blue-600 underline">clicking here</a>.</p>
+            {{/if}}
+        </section>
+
+        <section class="mt-6 shadow rounded bg-white">
+            <header class="capitalize p-2 mb-2 border-b flex flex-wrap justify-between items-center">
+                <h2 class="text-xl ">Languages</h2>
+                <a href="/add-language" class="rounded p-2 bg-green-500 text-white">Add language</a>
+            </header>
+            {{#if languages.length}}
+            <ol class="p-2">
+                {{#each languages}}
+                <li class="p-2 flex flex-wrap justify-between items-center even:bg-gray-100">
+                    <p>{{this.name}}</p>
+                    <span>
+                        <a href="/edit-language/{{this.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
+                        <a href="/delete-language/{{this.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
+                    </span>
+                </li>
+                {{/each}}
+            </ol>
+            {{else}}
+                <p class="p-2 mb-2">No languages found. Add a new language by clicking here <a href="/add-language" class="text-blue-600 underline">clicking here</a>.</p>
             {{/if}}
         </section>
     </div>

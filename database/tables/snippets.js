@@ -6,20 +6,24 @@ module.exports = class Snippets {
             title TEXT NOT NULL,
             code TEXT NOT NULL,
             folderId INT,
+            languageId INT,
             postDate TEXT DEFAULT CURRENT_TIMESTAMP,
             lastModified TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (folderId) REFERENCES Folders(id))`)
+            FOREIGN KEY (folderId) REFERENCES Folders(id),
+            FOREIGN KEY (languageId) REFERENCES Languages(id))`)
     }
 
-    insertSnippet(title, code, folder) {
+    insertSnippet(title, code, folder, language) {
         return new Promise((resolve, reject) => {
-            // Change folderId to NULL if folder string empty
-            let folderId = folder
+            // Change to null if empty
+            let folderId = folder,
+                languageId = language
             if (folderId == '') folderId = null
+            if (languageId == '') languageId = null
             
             // sql & params
-            const sql = `INSERT INTO Snippets (title, code, folderId) VALUES (?, ?, ?)`,
-                params = [title, code, folderId] 
+            const sql = `INSERT INTO Snippets (title, code, folderId, languageId) VALUES (?, ?, ?, ?)`,
+                params = [title, code, folderId, languageId] 
             
             this.db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
@@ -30,11 +34,11 @@ module.exports = class Snippets {
 
     getSnippet(snippetId) {
         return new Promise((resolve, reject) => {
-            // query & params
+            // query & param
             const query = `SELECT * FROM Snippets WHERE id = ?`,
-                params = [snippetId]
+                param = [snippetId]
 
-            this.db.get(query, params, (error, row) => {
+            this.db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -55,11 +59,11 @@ module.exports = class Snippets {
 
     getAllFolderSnippets(folderId) {
         return new Promise((resolve, reject) => {
-            // query
+            // query & param
             const query = `SELECT * FROM Snippets WHERE folderId = ?`,
-                params = [folderId]
+                param = [folderId]
             
-            this.db.all(query, params, (error, rows) => {
+            this.db.all(query, param, (error, rows) => {
                 if (error) reject('Internal Server Error')
                 resolve(rows)
             })
@@ -78,15 +82,17 @@ module.exports = class Snippets {
         })
     }
 
-    updateSnippet(id, title, code, folder) {
+    updateSnippet(id, title, code, folder, language) {
         return new Promise((resolve, reject) => {
-            // Change to NULL if empty
-            let folderId = folder
+            // Change to null if empty
+            let folderId = folder,
+                languageId = language
             if (folderId == '') folderId = null
+            if (languageId == '') languageId = null
 
             // sql & params
-            const sql = `UPDATE Snippets SET title = ?, code = ?, folderId = ?, lastModified = DateTime('NOW') WHERE id = ?`,
-                params = [title, code, folderId, id]
+            const sql = `UPDATE Snippets SET title = ?, code = ?, folderId = ?, languageId = ?, lastModified = DateTime('NOW') WHERE id = ?`,
+                params = [title, code, folderId, languageId, id]
             
             this.db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
@@ -97,11 +103,11 @@ module.exports = class Snippets {
 
     deleteSnippet(snippetId) {
         return new Promise((resolve, reject) => {
-            // sql & params
+            // sql & param
             const sql = `DELETE FROM Snippets WHERE id = ?`,
-                params = [snippetId]
+                param = [snippetId]
             
-            this.db.run(sql, params, (error) => {
+            this.db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Deleted code snippet.')
             })
@@ -110,11 +116,11 @@ module.exports = class Snippets {
 
     setSnippetsFolderToNull(folderId) {
         return new Promise((resolve, reject) => {
-            // sql & params
+            // sql & param
             const sql = `UPDATE Snippets SET folderId = NULL, lastModified = DateTime('NOW') WHERE folderId = ?`,
-                params = [folderId]
+                param = [folderId]
             
-            this.db.run(sql, params, (error) => {
+            this.db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Updated snippets folder')
             })
