@@ -2,7 +2,8 @@ const sqlite = require('sqlite3').verbose(),
 
 folders = require('./tables/folders.js'),
 snippets = require('./tables/snippets.js'),
-messages = require('./tables/messages.js')
+messages = require('./tables/messages.js'),
+languages = require('./tables/languages.js')
 
 class Database {
     constructor(dbname) {
@@ -13,6 +14,7 @@ class Database {
     
         // Tables
         this.folders = new folders(this.db)
+        this.languages = new languages(this.db)
         this.snippets = new snippets(this.db)
         this.messages = new messages(this.db)
     }
