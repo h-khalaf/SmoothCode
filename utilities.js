@@ -2,7 +2,7 @@
 
 function redirectIfNotLoggedIn (req, res, next) {
     if(!req.session.isLoggedIn)
-        res.redirect('/login')
+        res.status(401).redirect('/login') // Unauthorized
     else next()
 }
 

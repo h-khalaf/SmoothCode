@@ -36,9 +36,12 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
         if (latestCodeSnippet !== undefined) { // If not empty
             model.latestCodeSnippet = latestCodeSnippet
             if(isSnippetModified(latestCodeSnippet)) model.modified = true
-            
+
             // Overwriting the code with the highlighted code
-            model.latestCodeSnippet.code = hljs.highlightAuto(preventIndentedFirstLine(latestCodeSnippet.code)).value 
+            if(latestCodeSnippet.language != null) 
+                model.latestCodeSnippet.code = hljs.highlight(preventIndentedFirstLine(latestCodeSnippet.code), {language: latestCodeSnippet.language}).value 
+            else model.latestCodeSnippet.code = hljs.highlightAuto(preventIndentedFirstLine(latestCodeSnippet.code)).value
+
         }
 
         res.render('dashboard.hbs', model)
