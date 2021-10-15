@@ -61,18 +61,18 @@ folderRouter.post('/create-folder', redirectIfNotLoggedIn, validator.folderCreat
     }
 
     validationErrors = validationResult(req)
-        if (!validationErrors.isEmpty()) {
-            validationErrors.array().forEach(e => model.errors.push(e.msg)) // pushing only error messages
-            return res.render('create-folder.hbs', model)
-        }
+    if (!validationErrors.isEmpty()) {
+        validationErrors.array().forEach(e => model.errors.push(e.msg)) // pushing only error messages
+        return res.render('create-folder.hbs', model)
+    }
 
-        try {
-            await db.folders.createFolder(model.folderName)
-            res.redirect('/dashboard')
-        } catch (error) {
-            model.errors.push(error)
-            res.render('create-folder.hbs', model)
-        }
+    try {
+        await db.folders.createFolder(model.folderName)
+        res.redirect('/dashboard')
+    } catch (error) {
+        model.errors.push(error)
+        res.render('create-folder.hbs', model)
+    }
 })
 
 folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, async (req, res) => {
@@ -143,13 +143,16 @@ folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, async (req, res) =
 folderRouter.post('/delete-folder', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_FOLDER_PAGE_TITLE,
-        errors: []
-    },
-    folderId = req.body.id
+        errors: [],
+        folder: {
+            id: req.body.id,
+            name: req.body.name
+        }
+    }
     
     try {
-        await db.snippets.setSnippetsFolderToNull(folderId)
-        await db.folders.deleteFolder(folderId)
+        await db.snippets.setSnippetsFolderToNull(model.folder.id)
+        await db.folders.deleteFolder(model.folder.id)
         res.redirect('/folders')
     } catch (error) {
         model.errors.push(error)

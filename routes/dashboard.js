@@ -1,6 +1,6 @@
 const dashboardRouter = require('express').Router(),
 hljs  = require('highlight.js'),
-{ redirectIfNotLoggedIn } = require('../utilities.js'),
+{ redirectIfNotLoggedIn, isSnippetModified } = require('../utilities.js'),
 db = require('../database/dbmanager.js'),
 { validationResult } = require('express-validator'),
 validator = require('../validator.js'),
@@ -35,6 +35,7 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
 
         if (latestCodeSnippet !== undefined) { // If not empty
             model.latestCodeSnippet = latestCodeSnippet
+            if(isSnippetModified(latestCodeSnippet)) model.modified = true
             // Overwriting the code with the highlighted code
             model.latestCodeSnippet.code = hljs.highlightAuto(latestCodeSnippet.code).value 
         }
@@ -170,19 +171,16 @@ dashboardRouter.get('/edit-language/:id', redirectIfNotLoggedIn, async (req, res
 dashboardRouter.post('/edit-language', redirectIfNotLoggedIn, validator.languageUpdateValidation, async (req, res) => {
     const model = {
         pageTitle: EDIT_LANGUAGE_PAGE_TITLE,
-        errors: []
+        errors: [],
+        language: {
+            id: req.body.languageId,
+            name: req.body.languageName
+        }
     },
-    languageName = req.body.languageName,
-    languageId = req.body.languageId,
     
     validationErrors = validationResult(req)
     if (!validationErrors.isEmpty()) {
         validationErrors.array().forEach(e => model.errors.push(e.msg)) // pushing only error messages
-
-        model.language = { 
-            id: languageId,
-            name: languageName
-        }
         return res.render('edit-language.hbs', model)
     }
 

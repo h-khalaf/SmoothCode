@@ -35,8 +35,11 @@ module.exports = class Snippets {
     getSnippet(snippetId) {
         return new Promise((resolve, reject) => {
             // query & param
-            const query = `SELECT * FROM Snippets WHERE id = ?`,
-                param = [snippetId]
+            const query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets WHERE id = ?`,
+            param = [snippetId]
 
             this.db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
@@ -48,7 +51,10 @@ module.exports = class Snippets {
     getAllSnippets() {
         return new Promise((resolve, reject) => {
             // query
-            const query = `SELECT * FROM Snippets`
+            const query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets`
             
                 this.db.all(query, [], (error, rows) => {
                     if (error) reject('Internal Server Error')
@@ -60,8 +66,10 @@ module.exports = class Snippets {
     getAllFolderSnippets(folderId) {
         return new Promise((resolve, reject) => {
             // query & param
-            const query = `SELECT * FROM Snippets WHERE folderId = ?`,
-                param = [folderId]
+            const query = `SELECT *,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets WHERE folderId = ?`,
+            param = [folderId]
             
             this.db.all(query, param, (error, rows) => {
                 if (error) reject('Internal Server Error')
@@ -73,7 +81,11 @@ module.exports = class Snippets {
     getLatestSnippet () {
         return new Promise((resolve, reject) => {
             // query 
-            const query = `SELECT * FROM Snippets ORDER BY id DESC LIMIT 1`
+            const query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets 
+                        ORDER BY id DESC LIMIT 1`
 
             this.db.get(query, [], (error, row) => {
                 if (error) reject('Internal Server Error')

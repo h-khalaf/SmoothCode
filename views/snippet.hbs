@@ -1,9 +1,31 @@
 <main>
     <div class="container py-6">
-        <h1>TEST</h1>
-        {{snippet.title}}
-        <pre><code>
-            {{snippet.code}}
-        </code></pre>
+        <article class="shadow bg-white rounded p-2">
+            {{!-- header --}}
+            <header class="py-2 mb-2 border-b flex flex-wrap items-center justify-between">
+                <h1 class="text-2xl">{{snippet.title}}</h1>
+                <p class="text-sm p-1 border border-solid">{{#if snippet.language}}{{snippet.language}}{{else}}Plain Text{{/if}}</p>
+            </header>
+            {{!-- Code --}}
+            <pre class="overflow-x-auto p-2">
+                <code>{{{snippet.code}}}</code>
+            </pre>
+            {{#if isLoggedIn}}
+            <div class="flex flex-wrap flex-row-reverse">
+                <a href="/delete-snippet/{{snippet.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
+                <a href="/edit-snippet/{{snippet.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
+            </div>
+            {{/if}}
+            {{!-- Date --}}
+            {{#if modified}}
+            <p class="text-sm"><b>Last Edited: </b><time datetime="{{snippet.lastModified}}">{{snippet.lastModified}}</time></p>
+            {{else}}
+            <p class="text-sm"><b>Post Date: </b><time datetime="{{snippet.postDate}}">{{snippet.postDate}}</time></p>
+            {{/if}}
+            {{!-- Folder --}}
+            {{#if snippet.folderId}}
+            <p class="text-sm"><b>Folder: </b><a class="text-blue-500 underline" href="/folder/{{snippet.folderId}}">{{snippet.folder}}</a></p>
+            {{/if}}
+        </article>
     </div>
 </main>

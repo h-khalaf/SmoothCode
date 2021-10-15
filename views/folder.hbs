@@ -1,7 +1,7 @@
 <main>
     <div class="container py-6">
         {{> errors}}
-        <article>
+        <section>
             {{#if isLoggedIn}}
             <header class="p-2 mb-2 border-b flex flex-wrap justify-between items-center">
                 <h1 class="text-2xl md:text-4xl mb-2 inline">{{folder.name}}</h1>
@@ -14,20 +14,21 @@
             <h1 class="text-4xl p-2 mb-2 border-b">{{folder.name}}</h1>
             {{/if}}
             {{#if snippets}}
-            <div class="flex flex-wrap">
+            <ul class="flex flex-wrap">
             {{#each snippets}}
-                <article class="w-1/2 sm:w-3/6 md:w-2/6 lg:w-1/5">
+                <li class="w-1/2 sm:w-3/6 md:w-2/6 lg:w-1/5">
                     <a href="/snippet/{{this.id}}" class="block text-center p-2 m-1 sm:p-4 md:m-2 border border-solid border-gray-400">
                         <i class="block fas fa-file-code fa-3x text-blue-600 py-2"></i>
                         <h2 class="py-2">{{this.title}}</h2>
-                        <p class="pb-1 text-xs">Language: {{this.language}}</p>
+                        <p class="pb-1 text-xs">{{#if this.language}}{{this.language}}
+                            {{else}}plain text{{/if}}</p>
                     </a>
-                </article>
+                </li>
             {{/each}}
-            </div>
+            </ul>
             {{else}}
             <p class="my-6 text-2xl text-center">This folder is empty</p>
             {{/if}}
-        </article>
+        </section>
     </div>
 </main>

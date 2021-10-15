@@ -11,7 +11,7 @@ CONTACT_MESSAGE_MAX_LENGTH = 250,
 LANGUAGE_MIN_LENGTH = 2,
 LANGUAGE_MAX_LENGTH = 12
 
-exports.snippetValidation = [
+exports.addSnippetValidation = [
     body('title').notEmpty().withMessage('Title is required')
     .bail().isLength({max: SNIPPET_TITLE_MAX_LENGTH})
         .withMessage(`Title cannot be longer than ${SNIPPET_TITLE_MAX_LENGTH} characters`).trim(),
@@ -19,6 +19,17 @@ exports.snippetValidation = [
     body('code').notEmpty().withMessage('Code is required')
         .bail().isLength({max: SNIPPET_CODE_MAX_LENGTH})
             .withMessage(`Code cannot be longer than ${SNIPPET_CODE_MAX_LENGTH} characters`).trim()
+]
+
+exports.snippetUpdateValidation = [
+    body('title').notEmpty().withMessage('Title is required')
+    .bail().isLength({max: SNIPPET_TITLE_MAX_LENGTH})
+        .withMessage(`Title cannot be longer than ${SNIPPET_TITLE_MAX_LENGTH} characters`).trim(),
+    body('folder').trim(),
+    body('code').notEmpty().withMessage('Code is required')
+        .bail().isLength({max: SNIPPET_CODE_MAX_LENGTH})
+            .withMessage(`Code cannot be longer than ${SNIPPET_CODE_MAX_LENGTH} characters`).trim(),
+    body('id').notEmpty().withMessage('Snippet id is required').trim()
 ]
 
 exports.folderCreateValidation = [

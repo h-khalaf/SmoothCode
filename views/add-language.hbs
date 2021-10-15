@@ -5,7 +5,7 @@
         <form method="POST" class="mt-4 capitalize" action="/add-language" >
             <ul> 
                 <li class="relative border-b focus-within:border-green-400">
-                    <label for="language" class="block absolute top-2 left-2 text-sm">language</label>
+                    <label for="language" class="block absolute top-2 left-2 text-sm">language <span class="text-xs normal-case">(make sure it is compatible with hljs)</span></label>
                     <input type="text" id="language" name="language" autocomplete="off" required 
                     class="block pt-8 pb-2 px-2 w-full outline-none focus:bg-gray-50"
                     {{#if language}}value="{{language}}"{{/if}}>
