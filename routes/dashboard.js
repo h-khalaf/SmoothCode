@@ -1,6 +1,6 @@
 const dashboardRouter = require('express').Router(),
 hljs  = require('highlight.js'),
-{ redirectIfNotLoggedIn, isSnippetModified } = require('../utilities.js'),
+{ redirectIfNotLoggedIn, isSnippetModified, preventIndentedFirstLine } = require('../utilities.js'),
 db = require('../database/dbmanager.js'),
 { validationResult } = require('express-validator'),
 validator = require('../validator.js'),
@@ -36,8 +36,9 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
         if (latestCodeSnippet !== undefined) { // If not empty
             model.latestCodeSnippet = latestCodeSnippet
             if(isSnippetModified(latestCodeSnippet)) model.modified = true
+            
             // Overwriting the code with the highlighted code
-            model.latestCodeSnippet.code = hljs.highlightAuto(latestCodeSnippet.code).value 
+            model.latestCodeSnippet.code = hljs.highlightAuto(preventIndentedFirstLine(latestCodeSnippet.code)).value 
         }
 
         res.render('dashboard.hbs', model)

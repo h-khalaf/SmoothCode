@@ -1,15 +1,61 @@
 <main>
-    <div class="container py-6">
-        
+    <div class="container py-6">  
         <section class="shadow bg-white rounded border border-white focus-within:border-green-500 p-2">
-            <form method="GET" class="flex items-center">
-                <label for="search-input"><i class="fa fa-search fa-lg" aria-hidden="true"></i></label>
-                <input type="text" name="search" id="search-input" autocomplete="off" placeholder="Search here..." class="w-full p-2 focus:outline-none bg-white">
-                <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                <input type="submit" value="Search" class="bg-white text-sm rounded p-1 border ">
+            <form method="GET">
+                <ul class="flex items-center">
+                    <li class="flex items-center w-full">
+                        <label for="search-input"><i class="fa fa-search fa-lg" aria-hidden="true"></i></label> 
+                        <input type="text" name="search" id="search-input" autocomplete="off" placeholder="Search here..." class="w-full py-2 px-1 focus:outline-none bg-white">
+                    </li>
+                    <li class="flex flex-col ml-1 mr-2 ">
+                        <label for="languages" class="hidden">Language</label>
+                        <select name="language" id="languages" class="bg-white text-sm rounded p-1 border"> 
+                            <option value="all">All Languages</option>
+                            {{#each languages}}
+                                <option value="{{this.id}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </li>
+                    <li><input type="submit" value="Search" class="bg-white text-sm rounded p-1 border "></li>
+                </ul>    
             </form>
         </section>
 
+        <section class="rounded mt-6">
+            {{#if snippets.length}}
+            <ul>
+                {{#each snippets}}
+                <li class="bg-white mb-2 shadow">
+                    <article class="p-2">
+                        {{!-- header --}}
+                        <header class="py-2 mb-2 border-b flex flex-wrap items-center justify-between">
+                            <h2 class="text-lg">{{this.title}}</h2>
+                            <p class="text-sm p-1 border border-solid bg-white">{{#if this.language}}{{this.language}}{{else}}plaintext{{/if}}</p>
+                        </header>
+                        {{!-- Code --}}
+                        <a href="/snippet/{{this.id}}">
+                            <pre class="overflow-x-auto px-2">
+                                <code>{{{this.code}}}</code>
+                            </pre>
+                        </a>
+                        <footer class="p-2 mt-2 border-t flex flex-wrap justify-between">
+                            {{!-- Date --}}
+                            {{#if modified}}
+                            <p class="text-sm p-1 border"><b>Last Edited: </b><time datetime="{{this.lastModified}}">{{this.lastModified}}</time></p>
+                            {{else}}
+                            <p class="text-sm p-1 border"><b>Post Date: </b><time datetime="{{this.postDate}}">{{this.postDate}}</time></p>
+                            {{/if}}
+                            {{!-- Folder --}}
+                            {{#if this.folderId}}
+                            <a class="text-sm p-1 border text-blue-700" href="/folder/{{this.folderId}}"><i class="far fa-folder fa-lg"></i>&nbsp;{{this.folder}}</a>
+                            {{/if}}
+                        </footer>
+                    </article>
+                </li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </section>
 
     </div>
 </main>

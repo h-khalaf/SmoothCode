@@ -2,7 +2,7 @@ const snippetRouter = require('express').Router(),
 { validationResult } = require('express-validator'),
 db = require('../database/dbmanager.js'),
 validator = require('../validator.js'),
-{ redirectIfNotLoggedIn, isSnippetModified } = require('../utilities.js'),
+{ redirectIfNotLoggedIn, isSnippetModified, splitCodeLines, preventIndentedFirstLine } = require('../utilities.js'),
 hljs  = require('highlight.js'),
 
 SNIPPETS_PAGE_TITLE = 'Snippets',
@@ -17,9 +17,24 @@ snippetRouter.get('/snippets', async (req, res) => {
         pageTitle: SNIPPETS_PAGE_TITLE,
         errors: [] 
     }
+    // req.query returns an object
+    const query = req.query
+    //console.log(query.page)
 
     try {
         model.snippets = await db.snippets.getAllSnippets() 
+        model.languages = await db.languages.getAllLanguages()
+
+        // split and highlight code using the stored language, otherwise auto highlight
+        const firstLinesToKeep = 10
+        for(const snippet of model.snippets) {
+            snippet['code'] = splitCodeLines(snippet.code, firstLinesToKeep)
+            if(snippet.language != null) 
+                snippet.code = hljs.highlight(snippet.code, {language: snippet.language}).value 
+            else snippet.code = hljs.highlightAuto(snippet.code).value
+
+            if(isSnippetModified(snippet)) snippet.modified = true
+        }
         res.render('snippets.hbs', model)
     } catch (error) {
         model.errors.push = error
@@ -88,10 +103,15 @@ snippetRouter.get('/snippet/:id', async (req, res) => {
 
         model.pageTitle = snippet.title // Page title changed here...
         model.snippet = snippet
-        if(isSnippetModified(snippet)) model.modified = true // if modified display last modified date in hbs file
 
-        // Overwriting the code with the highlighted code   
-        model.snippet.code = hljs.highlightAuto(snippet.code).value
+        // If modified display last modified date in hbs file
+        if(isSnippetModified(snippet)) model.modified = true 
+
+        // Overwriting the code with the highlighted code
+        if(snippet.language != null) 
+            model.snippet.code = hljs.highlight(preventIndentedFirstLine(snippet.code), {language: snippet.language}).value 
+        else model.snippet.code = hljs.highlightAuto(preventIndentedFirstLine(snippet.code)).value
+
         res.render('snippet.hbs', model)
     } catch (error) {
         model.errors.push(error)

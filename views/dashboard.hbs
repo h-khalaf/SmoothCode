@@ -31,11 +31,18 @@
                 <pre class="overflow-x-auto p-2">
                     <code>{{{latestCodeSnippet.code}}}</code>
                 </pre>
-                {{#if modified}}
-                <p class="text-sm"><b>Last Edited: </b><time datetime="{{latestCodeSnippet.lastModified}}">{{latestCodeSnippet.lastModified}}</time></p>
-                {{else}}
-                <p class="text-sm"><b>Post Date: </b><time datetime="{{latestCodeSnippet.postDate}}">{{latestCodeSnippet.postDate}}</time></p>
-                {{/if}}
+                <footer class="p-2 mt-2 border-t flex flex-wrap justify-between">
+                    {{!-- Date --}}
+                    {{#if modified}}
+                    <p class="text-sm p-1 border"><b>Last Edited: </b><time datetime="{{latestCodeSnippet.lastModified}}">{{latestCodeSnippet.lastModified}}</time></p>
+                    {{else}}
+                    <p class="text-sm p-1 border"><b>Post Date: </b><time datetime="{{latestCodeSnippet.postDate}}">{{latestCodeSnippet.postDate}}</time></p>
+                    {{/if}}
+                    {{!-- Folder --}}
+                    {{#if latestCodeSnippet.folderId}}
+                    <a class="text-sm p-1 border text-blue-700" href="/folder/{{latestCodeSnippet.folderId}}"><i class="far fa-folder fa-lg"></i>&nbsp;{{latestCodeSnippet.folder}}</a>
+                    {{/if}}
+                </footer>
             </article>
             {{else}}
                 <p class="p-2 mb-2">No snippets found. Create your first code snippet by <a href="/add-snippet" class="text-blue-600 underline">clicking here</a>.</p>

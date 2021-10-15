@@ -38,6 +38,25 @@ function isSnippetModified (snippet) {
     return false
 }
 
+function preventIndentedFirstLine(code) {
+    return '\n' + code  // To prevent extra indent tab on first line code, bad solution is better than none ;)
+}
+
+function splitCodeLines(code, firstLinesToKeep) {
+    const lines = code.split('\n', firstLinesToKeep)
+    let modifiedCode = '\n' // To prevent extra indent tab on first line code, bad solution is better than none ;)
+
+    const linesLength = lines.length
+    for(let i = 0; i < linesLength; i++) {
+        if (i == firstLinesToKeep-1) {
+            modifiedCode += lines[i] + '\n' + '...' // adds ... to make it clear that code is longer than "firstLinesToKeep"
+        } else {
+            modifiedCode += lines[i] + '\n'
+        }
+    }
+    return modifiedCode
+}
+
 
 module.exports = {
     redirectIfNotLoggedIn,
@@ -45,5 +64,7 @@ module.exports = {
     baseModel,
     keepFirstLetters,
     keepFirstLettersObjectArray,
-    isSnippetModified
+    isSnippetModified,
+    preventIndentedFirstLine,
+    splitCodeLines
 }
