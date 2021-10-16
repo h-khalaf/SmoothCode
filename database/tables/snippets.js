@@ -57,11 +57,83 @@ module.exports = class Snippets {
                         FROM Snippets`
             
                 this.db.all(query, [], (error, rows) => {
-                    if (error) reject('Internal Server Error')
+                    if (error) reject('Internal Server Error', error)
                     resolve(rows)
                 })
         })
     }
+
+    getSnippets(limit, offset) {
+        return new Promise((resolve, reject) => {
+            // query & params
+            const query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets ORDER BY id DESC 
+                        LIMIT ? OFFSET ?`,
+                params = [limit, offset]
+            
+                this.db.all(query, params, (error, rows) => {
+                    if (error) reject('Internal Server Error', error)
+                    resolve(rows)
+                })
+        })
+    }
+
+    getSnippetsSearchResult(title, language, limit, offset) {
+        return new Promise((resolve, reject) => {
+
+            let query, params
+
+            if (language == "all") {
+                query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets WHERE title LIKE %?% ORDER BY id DESC 
+                        LIMIT ? OFFSET ?`       
+                params = [title, limit, offset]
+            
+            } else {
+                query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets WHERE title LIKE %?% AND languageId = ? ORDER BY id DESC
+                        LIMIT ? OFFSET ?` 
+                params = [title, language, limit, offset]
+            }      
+            
+            this.db.all(query, params, (error, rows) => {
+                if (error) reject('Internal Server Error', error)
+                resolve(rows)
+            })
+        })
+    }
+
+    getSearchTotalItems(title, language) {
+        return new Promise((resolve, reject) => {
+
+            let query, params
+
+            if (language == "all") {
+                console.log("all")
+                query = `SELECT COUNT(id) AS count FROM Snippets 
+                        WHERE title LIKE "%?%"`       
+                params = [title]
+            
+            } else {
+                query = `SELECT COUNT(id) AS count FROM Snippets 
+                        WHERE title LIKE "%?%" AND languageId = ?`
+                params = [title, language]
+            }      
+            
+            this.db.all(query, params, (error, rows) => {
+                if (error) reject('Internal Server Error', error)
+                console.log("all 123")
+                resolve(rows)
+            })
+        })
+    }
+
 
     getAllFolderSnippets(folderId) {
         return new Promise((resolve, reject) => {

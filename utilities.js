@@ -1,3 +1,6 @@
+// highlight.js
+const hljs  = require('highlight.js')
+
 // Functions & middlewares
 
 function redirectIfNotLoggedIn (req, res, next) {
@@ -57,6 +60,58 @@ function splitCodeLines(code, firstLinesToKeep) {
     return modifiedCode
 }
 
+function paginate(currentPage, pageLimit, totalItems) {
+    const totalPages = Math.ceil(totalItems / pageLimit)
+    console.log(totalPages)
+    let prevPage, nextPage
+    currentPage = parseInt(currentPage)
+    if (currentPage <= 1) {
+        currentPage = 1
+        if(totalPages > currentPage) 
+            nextPage = currentPage + 1
+        prevPage = false
+    }
+    else if (currentPage >= totalPages) {
+        currentPage = totalPages
+        prevPage = currentPage - 1
+        nextPage = false
+    } else {
+        prevPage = currentPage - 1
+        nextPage = currentPage + 1
+    }
+
+    return {
+        prevPage: prevPage,
+        currentPage: currentPage,
+        nextPage: nextPage,
+        offset: (currentPage - 1) * pageLimit,
+        limit: pageLimit
+    }
+}
+
+
+function highlightSnippets(firstLinesToKeep, snippets) {
+    // split and highlight code using the stored language, otherwise auto highlight
+    // takes in firstLinesToKeep and snippets (model.snippets)
+
+    for(const snippet of snippets) {
+        snippet['code'] = splitCodeLines(snippet.code, firstLinesToKeep)
+        if(snippet.language != null) 
+            snippet.code = hljs.highlight(snippet.code, {language: snippet.language}).value 
+        else snippet.code = hljs.highlightAuto(snippet.code).value
+
+        if(isSnippetModified(snippet)) snippet.modified = true
+    }
+}
+
+function highlightSnippet(snippet) {
+    // Overwriting the code with the highlighted code
+    // takes in snippet object (model.snippet)
+
+    if(snippet.language != null) 
+        snippet.code = hljs.highlight(preventIndentedFirstLine(snippet.code), {language: snippet.language}).value 
+    else snippet.code = hljs.highlightAuto(preventIndentedFirstLine(snippet.code)).value
+}
 
 module.exports = {
     redirectIfNotLoggedIn,
@@ -66,5 +121,8 @@ module.exports = {
     keepFirstLettersObjectArray,
     isSnippetModified,
     preventIndentedFirstLine,
-    splitCodeLines
+    splitCodeLines,
+    paginate,
+    highlightSnippet,
+    highlightSnippets
 }

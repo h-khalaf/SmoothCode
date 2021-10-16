@@ -2,15 +2,15 @@ const snippetRouter = require('express').Router(),
 { validationResult } = require('express-validator'),
 db = require('../database/dbmanager.js'),
 validator = require('../validator.js'),
-{ redirectIfNotLoggedIn, isSnippetModified, splitCodeLines, preventIndentedFirstLine } = require('../utilities.js'),
-hljs  = require('highlight.js'),
+{ redirectIfNotLoggedIn, isSnippetModified, paginate, highlightSnippet, highlightSnippets } = require('../utilities.js'),
 
 SNIPPETS_PAGE_TITLE = 'Snippets',
 SNIPPET_DEFAULT_PAGE_TITLE = 'Snippet',
 ADD_SNIPPET_PAGE_TITLE = 'Add Snippet',
 EDIT_SNIPPET_PAGE_TITLE = 'Edit Snippet',
 DELETE_SNIPPET_PAGE_TITLE = 'Delete Snippet',
-SNIPPET_NOT_FOUND_TITLE = 'Snippet not found'
+SNIPPET_NOT_FOUND_TITLE = 'Snippet not found',
+PAGE_NOT_FOUND = 'Page not found'
 
 snippetRouter.get('/snippets', async (req, res) => { 
     const model = { 
@@ -25,21 +25,59 @@ snippetRouter.get('/snippets', async (req, res) => {
         model.snippets = await db.snippets.getAllSnippets() 
         model.languages = await db.languages.getAllLanguages()
 
-        // split and highlight code using the stored language, otherwise auto highlight
-        const firstLinesToKeep = 10
-        for(const snippet of model.snippets) {
-            snippet['code'] = splitCodeLines(snippet.code, firstLinesToKeep)
-            if(snippet.language != null) 
-                snippet.code = hljs.highlight(snippet.code, {language: snippet.language}).value 
-            else snippet.code = hljs.highlightAuto(snippet.code).value
-
-            if(isSnippetModified(snippet)) snippet.modified = true
-        }
+        highlightSnippets(10, model.snippets)
         res.render('snippets.hbs', model)
     } catch (error) {
         model.errors.push = error
         res.render('snippets.hbs', model)
     }
+})
+
+snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
+    const currentPage = req.params.currentPage
+    const pageLimit = 10
+    if (Number.isNaN(parseInt(currentPage))) return res.render('404.hbs', {pageTitle: PAGE_NOT_FOUND})
+    const model = {
+        errors: []
+    }
+    
+    
+
+    try {
+        const {search, language} = req.query
+        console.log(req.query)
+        let snippets, paginataion
+        
+        if(search || language) { // If search
+            console.log("fml")
+            const totalItems = await db.snippets.getSearchTotalItems(search, language)
+            console.log(totalItems)
+            paginataion = paginate(currentPage, pageLimit, totalItems.count)
+            snippets = await db.snippets.getSnippetsSearchResult(search, language, paginataion.limit, paginataion.offset)
+        } else {
+            const totalItems = await db.snippets.countSnippets()
+            paginataion = paginate(currentPage, pageLimit, totalItems.count)
+            snippets = await db.snippets.getSnippets(paginataion.limit, paginataion.offset)
+        }
+        
+        
+
+        const model = {
+            pageTitle: SNIPPETS_PAGE_TITLE,
+            snippets: snippets,
+            currentPage: paginataion.currentPage,
+            prevPage: paginataion.prevPage,
+            nextPage: paginataion.nextPage
+        }
+
+        highlightSnippets(10, model.snippets)
+
+        res.render('snippets.hbs', model)
+    } catch (error) {
+        model.errors.push(error)
+        res.render('snippets.hbs', model)
+    }
+    
 })
 
 
@@ -196,12 +234,10 @@ snippetRouter.get('/snippet/:id', async (req, res) => {
         model.snippet = snippet
 
         // If modified display last modified date in hbs file
-        if(isSnippetModified(snippet)) model.modified = true 
+        if(isSnippetModified(snippet)) 
+            model.modified = true 
 
-        // Overwriting the code with the highlighted code
-        if(snippet.language != null) 
-            model.snippet.code = hljs.highlight(preventIndentedFirstLine(snippet.code), {language: snippet.language}).value 
-        else model.snippet.code = hljs.highlightAuto(preventIndentedFirstLine(snippet.code)).value
+        highlightSnippet(model.snippet)
 
         res.render('snippet.hbs', model)
     } catch (error) {

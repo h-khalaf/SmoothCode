@@ -1,7 +1,8 @@
 <main>
-    <div class="container py-6">  
+    <div class="container py-6">
+        {{> errors}}  
         <section class="shadow bg-white rounded border border-white focus-within:border-green-500 p-2">
-            <form method="GET">
+            <form method="GET" action="/snippets/page/1">
                 <ul class="flex items-center">
                     <li class="flex items-center w-full">
                         <label for="search-input"><i class="fa fa-search fa-lg" aria-hidden="true"></i></label> 
@@ -61,10 +62,9 @@
         {{#if snippets.length}}
         <footer>
             <ul class="flex justify-center items-center py-2"> 
-                {{#if notFirstPage}}<li><a href="" class="p-2">&#8592;&nbsp;Previous</a></li>{{/if}}
-                <li class="inline py-1 px-3 mx-1 text-white bg-green-500">1</li>
-                {{#if notLastPage}}<li><a href="" class="p-2">Next&nbsp;&#8594;</a></li>{{/if}}
-                <li><a href="?page=2" class="p-2">Next&nbsp;&#8594;</a></li>
+                {{#if prevPage}}<li><a href="{{prevPage}}" class="p-2">&#8592;&nbsp;Previous</a></li>{{/if}}
+                <li class="inline py-1 px-3 mx-1 text-white bg-green-500">{{currentPage}}</li>
+                {{#if nextPage}}<li><a href="{{nextPage}}" class="p-2">Next&nbsp;&#8594;</a></li>{{/if}}
             </ul>
         </footer>
         {{/if}}
