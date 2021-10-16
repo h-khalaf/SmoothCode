@@ -3,6 +3,7 @@ bcrypt = require('bcrypt'),
 { redirectToDashboardIfLoggedIn } = require('../utilities.js'),
 
 LOGIN_PAGE_TITLE = 'Sign in',
+LOGOUT_ERROR_TITLE = 'Failed to logout',
 USERNAME = 'admin',
 HASHED_PASSWORD = '$2b$10$t6RIOzAucOJ1PNkrkw/..uIo3xruZBZoaeF85x0PZ0m9bRA6J6Bk2'
 
@@ -39,11 +40,18 @@ loginRouter.post('/login', redirectToDashboardIfLoggedIn, async (req, res) =>{
 })
 
 loginRouter.post('/logout', (req, res) => {
+    model = {
+        pageTitle: LOGOUT_ERROR_TITLE,
+        errors: []
+    }
+
     req.session.destroy((error) => {
-        if (error)
-            console.log('Failed to sign out')
+        if (error) {
+            model.errors.push('Failed to sign out')
+            res.render('dashboard.hbs', model)
+        }
+        else res.redirect('/login')
     })
-    res.redirect('/login')
 })
 
 
