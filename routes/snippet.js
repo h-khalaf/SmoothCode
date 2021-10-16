@@ -13,45 +13,17 @@ SNIPPET_NOT_FOUND_TITLE = 'Snippet not found',
 PAGE_NOT_FOUND = 'Page not found'
 
 snippetRouter.get('/snippets', async (req, res) => { 
-    const model = { 
-        pageTitle: SNIPPETS_PAGE_TITLE,
-        errors: [] 
-    }
-    // req.query returns an object, create a custom function..
-    const query = req.query  // save query uri and send it back ?=key=value...
-    console.log(query)
-
-    try {
-        model.snippets = await db.snippets.getAllSnippets() 
-        model.languages = await db.languages.getAllLanguages()
-
-        highlightSnippets(10, model.snippets)
-        res.render('snippets.hbs', model)
-    } catch (error) {
-        model.errors.push = error
-        res.render('snippets.hbs', model)
-    }
-})
-
-snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
-    const currentPage = req.params.currentPage
-    const pageLimit = 10
-    if (Number.isNaN(parseInt(currentPage))) return res.render('404.hbs', {pageTitle: PAGE_NOT_FOUND})
-    const model = {
-        errors: []
-    }
+    const currentPage = 1,
+        pageLimit = 10
     
-    
-
     try {
         const {search, language} = req.query
-        console.log(req.query)
         let snippets, paginataion
         
-        if(search || language) { // If search
-            console.log("fml")
+        const languages = await db.languages.getAllLanguages()
+
+        if(search || language) { // Search
             const totalItems = await db.snippets.getSearchTotalItems(search, language)
-            console.log(totalItems)
             paginataion = paginate(currentPage, pageLimit, totalItems.count)
             snippets = await db.snippets.getSnippetsSearchResult(search, language, paginataion.limit, paginataion.offset)
         } else {
@@ -60,24 +32,65 @@ snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
             snippets = await db.snippets.getSnippets(paginataion.limit, paginataion.offset)
         }
         
-        
-
         const model = {
             pageTitle: SNIPPETS_PAGE_TITLE,
             snippets: snippets,
             currentPage: paginataion.currentPage,
             prevPage: paginataion.prevPage,
-            nextPage: paginataion.nextPage
+            nextPage: paginataion.nextPage,
+            languages: languages,
+            searchValue: search
         }
 
         highlightSnippets(10, model.snippets)
 
         res.render('snippets.hbs', model)
     } catch (error) {
-        model.errors.push(error)
+        const model = {pageTitle: SNIPPETS_PAGE_TITLE, errors: [error]}
         res.render('snippets.hbs', model)
     }
     
+    
+})
+
+snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
+    const currentPage = req.params.currentPage,
+        pageLimit = 10
+    if (Number.isNaN(parseInt(currentPage))) return res.render('404.hbs', {pageTitle: PAGE_NOT_FOUND})
+    
+    try {
+        const {search, language} = req.query
+        let snippets, paginataion
+
+        const languages = await db.languages.getAllLanguages()
+
+        if(search || language) { // Search
+            const totalItems = await db.snippets.getSearchTotalItems(search, language)
+            paginataion = paginate(currentPage, pageLimit, totalItems.count)
+            snippets = await db.snippets.getSnippetsSearchResult(search, language, paginataion.limit, paginataion.offset)
+        } else {
+            const totalItems = await db.snippets.countSnippets()
+            paginataion = paginate(currentPage, pageLimit, totalItems.count)
+            snippets = await db.snippets.getSnippets(paginataion.limit, paginataion.offset)
+        }
+        
+        const model = {
+            pageTitle: SNIPPETS_PAGE_TITLE,
+            snippets: snippets,
+            currentPage: paginataion.currentPage,
+            prevPage: paginataion.prevPage,
+            nextPage: paginataion.nextPage,
+            languages: languages,
+            searchValue: search
+        }
+
+        highlightSnippets(10, model.snippets)
+
+        res.render('snippets.hbs', model)
+    } catch (error) {
+        const model = {pageTitle: SNIPPETS_PAGE_TITLE, errors: [error]}
+        res.render('snippets.hbs', model)
+    }
 })
 
 

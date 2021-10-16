@@ -62,20 +62,20 @@ function splitCodeLines(code, firstLinesToKeep) {
 
 function paginate(currentPage, pageLimit, totalItems) {
     const totalPages = Math.ceil(totalItems / pageLimit)
-    console.log(totalPages)
     let prevPage, nextPage
+
     currentPage = parseInt(currentPage)
-    if (currentPage <= 1) {
+    if (currentPage <= 1) { // First page
         currentPage = 1
-        if(totalPages > currentPage) 
-            nextPage = currentPage + 1
+        nextPage = totalPages > currentPage ? currentPage + 1 : false
         prevPage = false
     }
-    else if (currentPage >= totalPages) {
+    else if (currentPage >= totalPages) {   // Pages between
         currentPage = totalPages
         prevPage = currentPage - 1
         nextPage = false
-    } else {
+    } 
+    else {    // Last page
         prevPage = currentPage - 1
         nextPage = currentPage + 1
     }

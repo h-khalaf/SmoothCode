@@ -2,11 +2,12 @@
     <div class="container py-6">
         {{> errors}}  
         <section class="shadow bg-white rounded border border-white focus-within:border-green-500 p-2">
-            <form method="GET" action="/snippets/page/1">
+            <form method="GET" action="/snippets">
                 <ul class="flex items-center">
                     <li class="flex items-center w-full">
                         <label for="search-input"><i class="fa fa-search fa-lg" aria-hidden="true"></i></label> 
-                        <input type="text" name="search" id="search-input" autocomplete="off" placeholder="Search here..." class="w-full py-2 px-1 focus:outline-none bg-white">
+                        <input type="text" name="search" id="search-input" autocomplete="off" placeholder="Search here..." class="w-full py-2 px-1 focus:outline-none bg-white"
+                        {{#if searchValue}}value="{{searchValue}}"{{/if}}>
                     </li>
                     <li class="flex flex-col ml-1 mr-2 ">
                         <label for="languages" class="hidden">Language</label>
@@ -56,15 +57,15 @@
                 {{/each}}
             </ul>
             {{else}}
-            <p class="my-6 text-2xl text-center">No code snippets have been added yet</p>
+            <p class="my-6 text-2xl text-center">No code snippets found</p>
             {{/if}}
         </section>
         {{#if snippets.length}}
         <footer>
             <ul class="flex justify-center items-center py-2"> 
-                {{#if prevPage}}<li><a href="{{prevPage}}" class="p-2">&#8592;&nbsp;Previous</a></li>{{/if}}
+                {{#if prevPage}}<li><a href="/snippets/page/{{prevPage}}" class="p-2">&#8592;&nbsp;Previous</a></li>{{/if}}
                 <li class="inline py-1 px-3 mx-1 text-white bg-green-500">{{currentPage}}</li>
-                {{#if nextPage}}<li><a href="{{nextPage}}" class="p-2">Next&nbsp;&#8594;</a></li>{{/if}}
+                {{#if nextPage}}<li><a href="/snippets/page/{{nextPage}}" class="p-2">Next&nbsp;&#8594;</a></li>{{/if}}
             </ul>
         </footer>
         {{/if}}

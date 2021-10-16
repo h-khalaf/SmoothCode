@@ -1,6 +1,5 @@
 const dashboardRouter = require('express').Router(),
-hljs  = require('highlight.js'),
-{ redirectIfNotLoggedIn, isSnippetModified, preventIndentedFirstLine } = require('../utilities.js'),
+{ redirectIfNotLoggedIn, isSnippetModified, highlightSnippet } = require('../utilities.js'),
 db = require('../database/dbmanager.js'),
 { validationResult } = require('express-validator'),
 validator = require('../validator.js'),
@@ -38,10 +37,7 @@ dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
             model.latestCodeSnippet = latestCodeSnippet
             if(isSnippetModified(latestCodeSnippet)) model.modified = true
 
-            // Overwriting the code with the highlighted code
-            if(latestCodeSnippet.language != null) 
-                model.latestCodeSnippet.code = hljs.highlight(preventIndentedFirstLine(latestCodeSnippet.code), {language: latestCodeSnippet.language}).value 
-            else model.latestCodeSnippet.code = hljs.highlightAuto(preventIndentedFirstLine(latestCodeSnippet.code)).value
+            highlightSnippet(model.latestCodeSnippet)
 
         }
 
@@ -118,7 +114,7 @@ dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
 })
 
 
-dashboardRouter.get('/langage/add', redirectIfNotLoggedIn, (req, res) => {
+dashboardRouter.get('/language/add', redirectIfNotLoggedIn, (req, res) => {
     const model = { pageTitle: ADD_LANGUAGE_PAGE_TITLE }
     res.render('add-language.hbs', model)
 })

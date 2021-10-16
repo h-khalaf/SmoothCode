@@ -57,7 +57,7 @@ module.exports = class Snippets {
                         FROM Snippets`
             
                 this.db.all(query, [], (error, rows) => {
-                    if (error) reject('Internal Server Error', error)
+                    if (error) reject('Internal Server Error')
                     resolve(rows)
                 })
         })
@@ -74,13 +74,13 @@ module.exports = class Snippets {
                 params = [limit, offset]
             
                 this.db.all(query, params, (error, rows) => {
-                    if (error) reject('Internal Server Error', error)
+                    if (error) reject('Internal Server Error')
                     resolve(rows)
                 })
         })
     }
 
-    getSnippetsSearchResult(title, language, limit, offset) {
+    getSnippetsSearchResult(search, language, limit, offset) {
         return new Promise((resolve, reject) => {
 
             let query, params
@@ -89,47 +89,44 @@ module.exports = class Snippets {
                 query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
-                        FROM Snippets WHERE title LIKE %?% ORDER BY id DESC 
+                        FROM Snippets WHERE title LIKE ? ORDER BY id DESC 
                         LIMIT ? OFFSET ?`       
-                params = [title, limit, offset]
+                params = ['%'+search+'%', limit, offset]
             
             } else {
                 query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
-                        FROM Snippets WHERE title LIKE %?% AND languageId = ? ORDER BY id DESC
+                        FROM Snippets WHERE title LIKE ? AND languageId = ? ORDER BY id DESC
                         LIMIT ? OFFSET ?` 
-                params = [title, language, limit, offset]
+                params = ['%'+search+'%', language, limit, offset]
             }      
             
             this.db.all(query, params, (error, rows) => {
-                if (error) reject('Internal Server Error', error)
+                if (error) reject('Internal Server Error')
                 resolve(rows)
             })
         })
     }
 
-    getSearchTotalItems(title, language) {
+    getSearchTotalItems(search, language) {
         return new Promise((resolve, reject) => {
-
-            let query, params
-
-            if (language == "all") {
-                console.log("all")
-                query = `SELECT COUNT(id) AS count FROM Snippets 
-                        WHERE title LIKE "%?%"`       
-                params = [title]
             
+            let query, params
+            
+            if (language == "all") {
+                query = `SELECT COUNT(id) AS count FROM Snippets
+                        WHERE title LIKE ?`    
+                params = ['%'+search+'%']
             } else {
                 query = `SELECT COUNT(id) AS count FROM Snippets 
-                        WHERE title LIKE "%?%" AND languageId = ?`
-                params = [title, language]
+                            WHERE title LIKE ? AND languageId = ?`
+                params = ['%'+search+'%', language]
             }      
             
-            this.db.all(query, params, (error, rows) => {
-                if (error) reject('Internal Server Error', error)
-                console.log("all 123")
-                resolve(rows)
+            this.db.get(query, params, (error, row) => {
+                if (error) reject('Internal Server Error')
+                resolve(row)
             })
         })
     }
