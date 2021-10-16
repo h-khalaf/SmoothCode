@@ -12,8 +12,8 @@
             </pre>
             {{#if isLoggedIn}}
             <div class="flex flex-wrap flex-row-reverse">
-                <a href="/delete-snippet/{{snippet.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
-                <a href="/edit-snippet/{{snippet.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
+                <a href="/snippet/delete/{{snippet.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
+                <a href="/snippet/edit/{{snippet.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
             </div>
             {{/if}}
             <footer class="p-2 mt-2 border-t flex flex-wrap justify-between">

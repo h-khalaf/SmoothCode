@@ -4,7 +4,7 @@
             Are you sure you want to delete <span class="text-blue-500">{{snippet.title}}</span>? 
         </h1>
         {{> errors}}
-        <form method="POST" class="mt-4 text-center" action="/delete-snippet" >
+        <form method="POST" class="mt-4 text-center" action="/snippet/delete" >
             <input type="hidden" name="id" value="{{snippet.id}}">
             <input type="hidden" name="name" value="{{snippet.title}}">
             <input type="hidden" name="_csrf" value="{{csrfToken}}">

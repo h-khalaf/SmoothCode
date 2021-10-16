@@ -49,7 +49,7 @@ function splitCodeLines(code, firstLinesToKeep) {
     const linesLength = lines.length
     for(let i = 0; i < linesLength; i++) {
         if (i == firstLinesToKeep-1) {
-            modifiedCode += lines[i] + '\n' + '...' // adds ... to make it clear that code is longer than "firstLinesToKeep"
+            modifiedCode += lines[i] + '\n' + '...' // adds ... to make it clear that code is longer or equal to "firstLinesToKeep"
         } else {
             modifiedCode += lines[i] + '\n'
         }

@@ -8,8 +8,7 @@ CONTACT_NAME_MAX_LENGTH = 25,
 CONTACT_EMAIL_MAX_LENGTH = 250,
 CONTACT_MESSAGE_MIN_LENGTH = 10,
 CONTACT_MESSAGE_MAX_LENGTH = 250,
-LANGUAGE_MIN_LENGTH = 2,
-LANGUAGE_MAX_LENGTH = 12
+LANGUAGE_MAX_LENGTH = 20
 
 exports.addSnippetValidation = [
     body('title').notEmpty().withMessage('Title is required')
@@ -48,7 +47,7 @@ exports.folderUpdateValidation = [
 exports.contactValidation = [
     body('name').notEmpty().withMessage('Name is required')
         .bail().isLength({max: CONTACT_NAME_MAX_LENGTH})
-            .withMessage(`Name Cannot be longer than ${CONTACT_NAME_MAX_LENGTH} characters`).trim(),
+            .withMessage(`Name cannot be longer than ${CONTACT_NAME_MAX_LENGTH} characters`).trim(),
     body('email').notEmpty().withMessage('Email is required')
         .bail().isLength({max: CONTACT_EMAIL_MAX_LENGTH}).withMessage(`Email cannot be longer than ${CONTACT_EMAIL_MAX_LENGTH} characters`).trim()
         .bail().isEmail().normalizeEmail().withMessage('Email is invalid').trim(),
@@ -59,13 +58,13 @@ exports.contactValidation = [
 
 exports.addLanguageValidation = [
     body('language').notEmpty().withMessage('Language is required')
-        .bail().isLength({min: LANGUAGE_MIN_LENGTH, max: LANGUAGE_MAX_LENGTH})
-            .withMessage(`Language must be between ${LANGUAGE_MIN_LENGTH} and ${LANGUAGE_MAX_LENGTH} characters`).toLowerCase().trim()
+        .bail().isLength({max: LANGUAGE_MAX_LENGTH})
+            .withMessage(`Language cannot be longer than ${LANGUAGE_MAX_LENGTH} characters`).toLowerCase().trim()
 ]
 
 exports.languageUpdateValidation = [
     body('languageName').notEmpty().withMessage('Language is required')
-        .bail().isLength({min: LANGUAGE_MIN_LENGTH, max: LANGUAGE_MAX_LENGTH})
-            .withMessage(`Language must be between ${LANGUAGE_MIN_LENGTH} and ${LANGUAGE_MAX_LENGTH} characters`).trim(),
+        .bail().isLength({ max: LANGUAGE_MAX_LENGTH})
+            .withMessage(`Language cannot be longer than ${LANGUAGE_MAX_LENGTH} characters`).toLowerCase().trim(),
     body('languageId').notEmpty().withMessage('language id is required').trim()
 ]

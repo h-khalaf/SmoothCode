@@ -4,7 +4,7 @@
             Are you sure you want to delete <span class="text-blue-500">{{language.name}}</span>? 
         </h1>
         {{> errors}}
-        <form method="POST" class="mt-4 text-center" action="/delete-language" >
+        <form method="POST" class="mt-4 text-center" action="/language/delete" >
             <input type="hidden" name="id" value="{{language.id}}">
             <input type="hidden" name="name" value="{{language.name}}">
             <input type="hidden" name="_csrf" value="{{csrfToken}}">

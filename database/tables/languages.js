@@ -9,7 +9,7 @@ module.exports = class Languages {
             name TEXT NOT NULL UNIQUE)`)
     }
 
-    insertCommonLanguages() {
+    insertHljsLanguages() {
         return new Promise((resolve, reject) => {
 
             // languages that are supported by hljs

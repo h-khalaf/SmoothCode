@@ -54,8 +54,19 @@
                 </li>
                 {{/each}}
             </ul>
+            {{else}}
+            <p class="my-6 text-2xl text-center">No code snippets have been added yet</p>
             {{/if}}
         </section>
-
+        {{#if snippets.length}}
+        <footer>
+            <ul class="flex justify-center items-center py-2"> 
+                {{#if notFirstPage}}<li><a href="" class="p-2">&#8592;&nbsp;Previous</a></li>{{/if}}
+                <li class="inline py-1 px-3 mx-1 text-white bg-green-500">1</li>
+                {{#if notLastPage}}<li><a href="" class="p-2">Next&nbsp;&#8594;</a></li>{{/if}}
+                <li><a href="?page=2" class="p-2">Next&nbsp;&#8594;</a></li>
+            </ul>
+        </footer>
+        {{/if}}
     </div>
 </main>

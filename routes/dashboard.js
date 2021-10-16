@@ -13,7 +13,8 @@ MESSAGE_NOT_FOUND_TITLE = 'Message not found',
 ADD_LANGUAGE_PAGE_TITLE = 'Add language',
 EDIT_LANGUAGE_PAGE_TITLE = 'Edit language',
 LANGUAGE_NOT_FOUND_TITLE = 'Language not found',
-DELETE_LANGUAGE_PAGE_TITLE = 'Delete language'
+DELETE_LANGUAGE_PAGE_TITLE = 'Delete language',
+ADD_HLJS_LANGUAGES_PAGE_TITLE = 'Add hljs languages'
 
 dashboardRouter.get('/dashboard', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
@@ -66,23 +67,7 @@ dashboardRouter.get('/messages', redirectIfNotLoggedIn, async (req, res) => {
     }
 })
 
-dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
-    const model = {
-        pageTitle: DEFAULT_MESSAGE_PAGE_TITLE,
-        errors: []
-    },
-    messageId = req.params.id
-
-    try {
-        const message = await db.messages.getMessage(messageId)
-        if (message === undefined) return res.render('404.hbs', {pageTitle: MESSAGE_NOT_FOUND_TITLE})
-    } catch (error) {
-        model.errors.push(error)
-        res.render('message.hbs', model)
-    }
-})
-
-dashboardRouter.get('/delete-message/:id', redirectIfNotLoggedIn, async (req, res) => {
+dashboardRouter.get('/message/delete/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_MESSAGE_PAGE_TITLE,
         errors: []
@@ -100,7 +85,7 @@ dashboardRouter.get('/delete-message/:id', redirectIfNotLoggedIn, async (req, re
     }
 })
 
-dashboardRouter.post('/delete-message', redirectIfNotLoggedIn, async (req, res) => {
+dashboardRouter.post('/message/delete', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_MESSAGE_PAGE_TITLE,
         errors: []
@@ -116,12 +101,29 @@ dashboardRouter.post('/delete-message', redirectIfNotLoggedIn, async (req, res) 
     }
 })
 
-dashboardRouter.get('/add-language', redirectIfNotLoggedIn, (req, res) => {
+dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: DEFAULT_MESSAGE_PAGE_TITLE,
+        errors: []
+    },
+    messageId = req.params.id
+
+    try {
+        const message = await db.messages.getMessage(messageId)
+        if (message === undefined) return res.render('404.hbs', {pageTitle: MESSAGE_NOT_FOUND_TITLE})
+    } catch (error) {
+        model.errors.push(error)
+        res.render('message.hbs', model)
+    }
+})
+
+
+dashboardRouter.get('/langage/add', redirectIfNotLoggedIn, (req, res) => {
     const model = { pageTitle: ADD_LANGUAGE_PAGE_TITLE }
     res.render('add-language.hbs', model)
 })
 
-dashboardRouter.post('/add-language', redirectIfNotLoggedIn, validator.addLanguageValidation, async (req, res) => {
+dashboardRouter.post('/language/add', redirectIfNotLoggedIn, validator.addLanguageValidation, async (req, res) => {
     const model = {
         pageTitle: ADD_LANGUAGE_PAGE_TITLE,
         errors: [],
@@ -154,7 +156,27 @@ dashboardRouter.post('/add-language', redirectIfNotLoggedIn, validator.addLangua
     }
 })
 
-dashboardRouter.get('/edit-language/:id', redirectIfNotLoggedIn, async (req, res) => {
+dashboardRouter.get('/language/hljs', redirectIfNotLoggedIn, (req, res) => {
+    const model = {pageTitle: ADD_HLJS_LANGUAGES_PAGE_TITLE}
+    res.render('add-hljs-languages.hbs', model)
+})
+
+dashboardRouter.post('/language/hljs', redirectIfNotLoggedIn, async (req, res) => {
+    const model = {
+        pageTitle: ADD_HLJS_LANGUAGES_PAGE_TITLE,
+        errors: []
+    }
+
+    try {
+        await db.languages.insertHljsLanguages()
+        res.redirect('/dashboard')
+    } catch (error) {
+        model.errors.push(error)
+        res.render('add-hljs-languages.hbs', model)
+    }
+})
+
+dashboardRouter.get('/language/edit/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: EDIT_LANGUAGE_PAGE_TITLE,
         errors: []
@@ -172,7 +194,7 @@ dashboardRouter.get('/edit-language/:id', redirectIfNotLoggedIn, async (req, res
     }
 })
 
-dashboardRouter.post('/edit-language', redirectIfNotLoggedIn, validator.languageUpdateValidation, async (req, res) => {
+dashboardRouter.post('/language/edit', redirectIfNotLoggedIn, validator.languageUpdateValidation, async (req, res) => {
     const model = {
         pageTitle: EDIT_LANGUAGE_PAGE_TITLE,
         errors: [],
@@ -189,7 +211,7 @@ dashboardRouter.post('/edit-language', redirectIfNotLoggedIn, validator.language
     }
 
     try {
-        await db.languages.updateLanguage(languageId, languageName)
+        await db.languages.updateLanguage(model.language.id, model.language.name)
         res.redirect('/dashboard')
     } catch (error) {
         model.errors.push(error)
@@ -197,7 +219,7 @@ dashboardRouter.post('/edit-language', redirectIfNotLoggedIn, validator.language
     }
 })
 
-dashboardRouter.get('/delete-language/:id', redirectIfNotLoggedIn, async (req, res) => {
+dashboardRouter.get('/language/delete/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_LANGUAGE_PAGE_TITLE,
         errors: []
@@ -216,7 +238,7 @@ dashboardRouter.get('/delete-language/:id', redirectIfNotLoggedIn, async (req, r
     }
 })
 
-dashboardRouter.post('/delete-language', redirectIfNotLoggedIn, async (req, res) => {
+dashboardRouter.post('/language/delete', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_LANGUAGE_PAGE_TITLE,
         errors: [],

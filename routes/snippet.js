@@ -17,9 +17,9 @@ snippetRouter.get('/snippets', async (req, res) => {
         pageTitle: SNIPPETS_PAGE_TITLE,
         errors: [] 
     }
-    // req.query returns an object
-    const query = req.query
-    //console.log(query.page)
+    // req.query returns an object, create a custom function..
+    const query = req.query  // save query uri and send it back ?=key=value...
+    console.log(query)
 
     try {
         model.snippets = await db.snippets.getAllSnippets() 
@@ -43,7 +43,7 @@ snippetRouter.get('/snippets', async (req, res) => {
 })
 
 
-snippetRouter.get('/add-snippet', redirectIfNotLoggedIn, async (req, res) => {
+snippetRouter.get('/snippet/add', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
         pageTitle: ADD_SNIPPET_PAGE_TITLE,
         errors: [] 
@@ -59,7 +59,7 @@ snippetRouter.get('/add-snippet', redirectIfNotLoggedIn, async (req, res) => {
     }
 })
 
-snippetRouter.post('/add-snippet', redirectIfNotLoggedIn, validator.addSnippetValidation, async (req, res) => {
+snippetRouter.post('/snippet/add', redirectIfNotLoggedIn, validator.addSnippetValidation, async (req, res) => {
     const model = { 
         pageTitle: ADD_SNIPPET_PAGE_TITLE,
         errors: [],
@@ -91,35 +91,7 @@ snippetRouter.post('/add-snippet', redirectIfNotLoggedIn, validator.addSnippetVa
     }
 })
 
-snippetRouter.get('/snippet/:id', async (req, res) => {
-    const model = {
-        pageTitle: SNIPPET_DEFAULT_PAGE_TITLE, // If no error occurs, page title will be title of the code snippet
-        errors: []
-    },
-    snippetId = req.params.id
-    try {
-        const snippet = await db.snippets.getSnippet(snippetId)
-        if (snippet === undefined) return res.render('404.hbs', {pageTitle: SNIPPET_NOT_FOUND_TITLE})
-
-        model.pageTitle = snippet.title // Page title changed here...
-        model.snippet = snippet
-
-        // If modified display last modified date in hbs file
-        if(isSnippetModified(snippet)) model.modified = true 
-
-        // Overwriting the code with the highlighted code
-        if(snippet.language != null) 
-            model.snippet.code = hljs.highlight(preventIndentedFirstLine(snippet.code), {language: snippet.language}).value 
-        else model.snippet.code = hljs.highlightAuto(preventIndentedFirstLine(snippet.code)).value
-
-        res.render('snippet.hbs', model)
-    } catch (error) {
-        model.errors.push(error)
-        res.render('snippet.hbs', model)
-    }
-})
-
-snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, async (req, res) => {
+snippetRouter.get('/snippet/edit/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: EDIT_SNIPPET_PAGE_TITLE,
         errors: []
@@ -139,7 +111,7 @@ snippetRouter.get('/edit-snippet/:id', redirectIfNotLoggedIn, async (req, res) =
     }
 })
 
-snippetRouter.post('/edit-snippet', redirectIfNotLoggedIn, validator.snippetUpdateValidation, async (req, res) => {
+snippetRouter.post('/snippet/edit', redirectIfNotLoggedIn, validator.snippetUpdateValidation, async (req, res) => {
     const model = {
         pageTitle: EDIT_SNIPPET_PAGE_TITLE,
         errors: [],
@@ -173,7 +145,7 @@ snippetRouter.post('/edit-snippet', redirectIfNotLoggedIn, validator.snippetUpda
     }
 })
 
-snippetRouter.get('/delete-snippet/:id', redirectIfNotLoggedIn, async (req, res) => {
+snippetRouter.get('/snippet/delete/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_SNIPPET_PAGE_TITLE,
         errors: []
@@ -192,7 +164,7 @@ snippetRouter.get('/delete-snippet/:id', redirectIfNotLoggedIn, async (req, res)
     }
 })
 
-snippetRouter.post('/delete-snippet', redirectIfNotLoggedIn, async (req, res) => {
+snippetRouter.post('/snippet/delete', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_SNIPPET_PAGE_TITLE,
         errors: [],
@@ -207,6 +179,34 @@ snippetRouter.post('/delete-snippet', redirectIfNotLoggedIn, async (req, res) =>
     } catch (error) {
         model.errors.push(error)
         res.render('delete-snippet.hbs', model)
+    }
+})
+
+snippetRouter.get('/snippet/:id', async (req, res) => {
+    const model = {
+        pageTitle: SNIPPET_DEFAULT_PAGE_TITLE, // If no error occurs, page title will be title of the code snippet
+        errors: []
+    },
+    snippetId = req.params.id
+    try {
+        const snippet = await db.snippets.getSnippet(snippetId)
+        if (snippet === undefined) return res.render('404.hbs', {pageTitle: SNIPPET_NOT_FOUND_TITLE})
+
+        model.pageTitle = snippet.title // Page title changed here...
+        model.snippet = snippet
+
+        // If modified display last modified date in hbs file
+        if(isSnippetModified(snippet)) model.modified = true 
+
+        // Overwriting the code with the highlighted code
+        if(snippet.language != null) 
+            model.snippet.code = hljs.highlight(preventIndentedFirstLine(snippet.code), {language: snippet.language}).value 
+        else model.snippet.code = hljs.highlightAuto(preventIndentedFirstLine(snippet.code)).value
+
+        res.render('snippet.hbs', model)
+    } catch (error) {
+        model.errors.push(error)
+        res.render('snippet.hbs', model)
     }
 })
 

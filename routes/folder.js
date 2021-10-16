@@ -26,34 +26,12 @@ folderRouter.get('/folders', async (req, res) => {
     }
 })
 
-folderRouter.get('/folder/:id', async (req, res) => {
-    const model = {
-        errors: []
-    },
-    
-    folderId = req.params.id
-    try {
-        const folder = await db.folders.getFolder(folderId)
-        if(folder === undefined) return res.render('404.hbs', {pageTitle: FOLDER_NOT_FOUND_TITLE})
-
-        model.folder = folder
-        model.pageTitle = folder.name
-        model.snippets = await db.snippets.getAllFolderSnippets(folderId)
-        
-        keepFirstLettersObjectArray(model.snippets, 'title', 18)
-        res.render('folder.hbs', model)
-    } catch (error) {
-        model.errors.push(error)
-        res.render('folder.hbs', model)
-    }
-})
-
-folderRouter.get('/create-folder', redirectIfNotLoggedIn, (req, res) => {
+folderRouter.get('/folder/create', redirectIfNotLoggedIn, (req, res) => {
     const model = { pageTitle: CREATE_FOLDER_PAGE_TITLE }
     res.render('create-folder.hbs', model)
 })
 
-folderRouter.post('/create-folder', redirectIfNotLoggedIn, validator.folderCreateValidation, async (req, res) => {
+folderRouter.post('/folder/create', redirectIfNotLoggedIn, validator.folderCreateValidation, async (req, res) => {
     const model = { 
         pageTitle: CREATE_FOLDER_PAGE_TITLE,
         errors: [],
@@ -75,7 +53,7 @@ folderRouter.post('/create-folder', redirectIfNotLoggedIn, validator.folderCreat
     }
 })
 
-folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, async (req, res) => {
+folderRouter.get('/folder/edit/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = { 
         pageTitle: EDIT_FOLDER_PAGE_TITLE,
         errors: [] 
@@ -93,7 +71,7 @@ folderRouter.get('/edit-folder/:id', redirectIfNotLoggedIn, async (req, res) => 
     }
 })
 
-folderRouter.post('/edit-folder', redirectIfNotLoggedIn, validator.folderUpdateValidation, async (req, res) => {
+folderRouter.post('/folder/edit', redirectIfNotLoggedIn, validator.folderUpdateValidation, async (req, res) => {
     const model = { 
         pageTitle: EDIT_FOLDER_PAGE_TITLE,
         errors: [] 
@@ -122,7 +100,7 @@ folderRouter.post('/edit-folder', redirectIfNotLoggedIn, validator.folderUpdateV
 })
 
 
-folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, async (req, res) => {
+folderRouter.get('/folder/delete/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_FOLDER_PAGE_TITLE,
         errors: []
@@ -140,7 +118,7 @@ folderRouter.get('/delete-folder/:id', redirectIfNotLoggedIn, async (req, res) =
     }
 })
 
-folderRouter.post('/delete-folder', redirectIfNotLoggedIn, async (req, res) => {
+folderRouter.post('/folder/delete', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
         pageTitle: DELETE_FOLDER_PAGE_TITLE,
         errors: [],
@@ -157,6 +135,28 @@ folderRouter.post('/delete-folder', redirectIfNotLoggedIn, async (req, res) => {
     } catch (error) {
         model.errors.push(error)
         res.render('delete-folder.hbs', model)
+    }
+})
+
+folderRouter.get('/folder/:id', async (req, res) => {
+    const model = {
+        errors: []
+    },
+    
+    folderId = req.params.id
+    try {
+        const folder = await db.folders.getFolder(folderId)
+        if(folder === undefined) return res.render('404.hbs', {pageTitle: FOLDER_NOT_FOUND_TITLE})
+
+        model.folder = folder
+        model.pageTitle = folder.name
+        model.snippets = await db.snippets.getAllFolderSnippets(folderId)
+        
+        keepFirstLettersObjectArray(model.snippets, 'title', 18)
+        res.render('folder.hbs', model)
+    } catch (error) {
+        model.errors.push(error)
+        res.render('folder.hbs', model)
     }
 })
 

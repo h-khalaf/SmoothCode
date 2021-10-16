@@ -45,14 +45,17 @@
                 </footer>
             </article>
             {{else}}
-                <p class="p-2 mb-2">No snippets found. Create your first code snippet by <a href="/add-snippet" class="text-blue-600 underline">clicking here</a>.</p>
+                <p class="p-2 mb-2">No snippets found. Create your first code snippet by <a href="/snippet/add" class="text-blue-600 underline">clicking here</a>.</p>
             {{/if}}
         </section>
 
         <section class="mt-6 shadow rounded bg-white">
             <header class="capitalize p-2 mb-2 border-b flex flex-wrap justify-between items-center">
                 <h2 class="text-xl ">Languages</h2>
-                <a href="/add-language" class="rounded p-2 bg-green-500 text-white">Add language</a>
+                <div>
+                   <a href="/language/hljs" class="rounded p-2 bg-blue-500 text-white">Add hljs languages</a>
+                   <a href="/language/add" class="rounded p-2 bg-green-500 text-white">Add language</a>
+                </div>
             </header>
             {{#if languages.length}}
             <ol class="p-2">
@@ -60,14 +63,14 @@
                 <li class="p-2 flex flex-wrap justify-between items-center even:bg-gray-100">
                     <p>{{this.name}}</p>
                     <span>
-                        <a href="/edit-language/{{this.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
-                        <a href="/delete-language/{{this.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
+                        <a href="/language/edit/{{this.id}}" class="rounded p-1 mr-1 bg-blue-500 text-white text-sm">Edit</a>
+                        <a href="/language/delete/{{this.id}}" class="rounded p-1 mr-1 bg-red-500 text-white text-sm">Delete</a>
                     </span>
                 </li>
                 {{/each}}
             </ol>
             {{else}}
-                <p class="p-2 mb-2">No languages found. Add a new language by clicking here <a href="/add-language" class="text-blue-600 underline">clicking here</a>.</p>
+                <p class="p-2 mb-2">No languages found. Add a new language by clicking here <a href="/language/add" class="text-blue-600 underline">clicking here</a>.</p>
             {{/if}}
         </section>
     </div>
