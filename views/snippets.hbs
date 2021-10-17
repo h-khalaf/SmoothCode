@@ -13,6 +13,7 @@
                         <label for="languages" class="hidden">Language</label>
                         <select name="language" id="languages" class="bg-white text-sm rounded p-1 border"> 
                             <option value="all">All Languages</option>
+                            <option value="unspecified">Unspecified</option>
                             {{#each languages}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                             {{/each}}

@@ -93,6 +93,14 @@ module.exports = class Snippets {
                         LIMIT ? OFFSET ?`       
                 params = ['%'+search+'%', limit, offset]
             
+            } else if (language == "unspecified") {
+                query = `SELECT  *,
+                        (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
+                        (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
+                        FROM Snippets WHERE title LIKE ? AND languageId IS NULL ORDER BY id DESC
+                        LIMIT ? OFFSET ?` 
+                params = ['%'+search+'%', limit, offset]
+            
             } else {
                 query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
@@ -118,6 +126,12 @@ module.exports = class Snippets {
                 query = `SELECT COUNT(id) AS count FROM Snippets
                         WHERE title LIKE ?`    
                 params = ['%'+search+'%']
+
+            } else if (language == "unspecified") {
+                query = `SELECT COUNT(id) AS count FROM Snippets 
+                            WHERE title LIKE ? AND languageId IS NULL`
+                params = ['%'+search+'%']
+            
             } else {
                 query = `SELECT COUNT(id) AS count FROM Snippets 
                             WHERE title LIKE ? AND languageId = ?`

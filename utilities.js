@@ -70,12 +70,12 @@ function paginate(currentPage, pageLimit, totalItems) {
         nextPage = totalPages > currentPage ? currentPage + 1 : false
         prevPage = false
     }
-    else if (currentPage >= totalPages) {   // Pages between
+    else if (currentPage >= totalPages) {   // Last page
         currentPage = totalPages
         prevPage = currentPage - 1
         nextPage = false
     } 
-    else {    // Last page
+    else {    // Pages between
         prevPage = currentPage - 1
         nextPage = currentPage + 1
     }
