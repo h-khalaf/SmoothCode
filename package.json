@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build-css": "tailwindcss build -i style.css -o static/css/styles.css"
+    "build-css": "tailwindcss build -i tailwind.css -o static/css/style.css",
+    "build-css-prod": "NODE_ENV=production tailwind build -i static/css/style.css -o static/css/style.css"
   },
   "keywords": [],
   "author": "",

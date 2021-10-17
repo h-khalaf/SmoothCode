@@ -1,5 +1,12 @@
 module.exports = {
-  purge: [],
+  purge: {
+    enabled: true, // set true to purge
+    content: [
+      './views/*.hbs',
+      './views/layouts/*.hbs',
+      './views/partials/*.hbs'
+    ]
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     container: {
