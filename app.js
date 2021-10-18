@@ -11,10 +11,13 @@ csrfProtection = require('csurf')({cookie: true}),
 // Files
 routes = require('./routes'),
 { baseModel } = require('./utilities.js'),
+db = require('./database/dbmanager.js'),
 
 PORT = 8080,
 app = express()
-require('./database/dbmanager.js') // Creates db 
+
+// Create Database and its tables
+db
 
 // Urlencode middleware (for POST requests)
 app.use(express.json())

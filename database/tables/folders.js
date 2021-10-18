@@ -1,7 +1,8 @@
-module.exports = class Categories {
+module.exports = class Folders {
+    #db
     constructor(db) {
-        this.db = db
-        this.db.run(`CREATE TABLE IF NOT EXISTS Folders
+        this.#db = db
+        this.#db.run(`CREATE TABLE IF NOT EXISTS Folders
             (id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL)`)
     }
@@ -12,7 +13,7 @@ module.exports = class Categories {
             const sql = `INSERT INTO Folders (name) VALUES (?)`,
                 param = [name]
             
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Folder successfully created')
             })
@@ -25,7 +26,7 @@ module.exports = class Categories {
             const query = `SELECT * FROM Folders WHERE id = ?`,
                 param = [id]
             
-            this.db.get(query, param, (error, row) => {
+            this.#db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -39,7 +40,7 @@ module.exports = class Categories {
                 (SELECT COUNT(id) FROM Snippets WHERE folderId =  F.id) AS snippetsCount 
                 FROM Folders F`
 
-            this.db.all(query, [], (error, rows) => {
+            this.#db.all(query, [], (error, rows) => {
                 if (error) reject('Internal Server Error')
                 resolve (rows)
             })
@@ -52,7 +53,7 @@ module.exports = class Categories {
             const sql = `UPDATE Folders SET name = ? WHERE id = ?`,
                 params = [name, id]
             
-            this.db.run(sql, params, (error) => {
+            this.#db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Folder successfully edited')
             })
@@ -65,7 +66,7 @@ module.exports = class Categories {
             const sql = `DELETE FROM Folders WHERE id = ?`,
                 param = [id]
     
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Folder successfully deleted')
             })
@@ -77,7 +78,7 @@ module.exports = class Categories {
             // query
             const query = `SELECT COUNT(*) as count FROM Folders`
 
-            this.db.get(query, [], (error, row) => {
+            this.#db.get(query, [], (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })

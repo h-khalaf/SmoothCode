@@ -1,7 +1,8 @@
 module.exports = class Messages {
+    #db
     constructor(db) {
-        this.db = db
-        this.db.run(`CREATE TABLE IF NOT EXISTS Messages
+        this.#db = db
+        this.#db.run(`CREATE TABLE IF NOT EXISTS Messages
             (id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT NOT NULL,
@@ -15,7 +16,7 @@ module.exports = class Messages {
             const sql = `INSERT INTO Messages (name, email, message) VALUES (?, ?, ?)`,
                 params = [name, email, message]
             
-            this.db.run(sql, params, (error) => {
+            this.#db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Message successfully sent')
             })
@@ -26,7 +27,7 @@ module.exports = class Messages {
         return new Promise((resolve, reject) => {
             const query = `SELECT * FROM Messages ORDER BY id DESC` // Latest first
 
-            this.db.all(query, [], (error, rows) => {
+            this.#db.all(query, [], (error, rows) => {
                 if(error) reject('Internal Server Error')
                 resolve (rows)
             })
@@ -39,7 +40,7 @@ module.exports = class Messages {
             const query = `SELECT * FROM Messages WHERE id = ?`,
                 param = [id]
             
-            this.db.get(query, param, (error, row) => {
+            this.#db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -52,7 +53,7 @@ module.exports = class Messages {
             const sql = `DELETE FROM Messages WHERE id = ?`,
                 param = [id]
     
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Message successfully deleted')
             })
@@ -64,7 +65,7 @@ module.exports = class Messages {
             // query
             const query = `SELECT COUNT(*) AS count FROM Messages`
 
-            this.db.get(query, [], (error, row) => {
+            this.#db.get(query, [], (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })

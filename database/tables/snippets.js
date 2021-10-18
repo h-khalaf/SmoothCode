@@ -1,7 +1,8 @@
 module.exports = class Snippets {
+    #db
     constructor(db) {
-        this.db = db
-        this.db.run(`CREATE TABLE IF NOT EXISTS Snippets
+        this.#db = db
+        this.#db.run(`CREATE TABLE IF NOT EXISTS Snippets
             (id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             code TEXT NOT NULL,
@@ -25,7 +26,7 @@ module.exports = class Snippets {
             const sql = `INSERT INTO Snippets (title, code, folderId, languageId) VALUES (?, ?, ?, ?)`,
                 params = [title, code, folderId, languageId] 
             
-            this.db.run(sql, params, (error) => {
+            this.#db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Added code snippet.')
             })
@@ -41,7 +42,7 @@ module.exports = class Snippets {
                         FROM Snippets WHERE id = ?`,
             param = [snippetId]
 
-            this.db.get(query, param, (error, row) => {
+            this.#db.get(query, param, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -56,7 +57,7 @@ module.exports = class Snippets {
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
                         FROM Snippets`
             
-                this.db.all(query, [], (error, rows) => {
+                this.#db.all(query, [], (error, rows) => {
                     if (error) reject('Internal Server Error')
                     resolve(rows)
                 })
@@ -73,7 +74,7 @@ module.exports = class Snippets {
                         LIMIT ? OFFSET ?`,
                 params = [limit, offset]
             
-                this.db.all(query, params, (error, rows) => {
+                this.#db.all(query, params, (error, rows) => {
                     if (error) reject('Internal Server Error')
                     resolve(rows)
                 })
@@ -110,7 +111,7 @@ module.exports = class Snippets {
                 params = ['%'+search+'%', language, limit, offset]
             }      
             
-            this.db.all(query, params, (error, rows) => {
+            this.#db.all(query, params, (error, rows) => {
                 if (error) reject('Internal Server Error')
                 resolve(rows)
             })
@@ -138,7 +139,7 @@ module.exports = class Snippets {
                 params = ['%'+search+'%', language]
             }      
             
-            this.db.get(query, params, (error, row) => {
+            this.#db.get(query, params, (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve(row)
             })
@@ -154,7 +155,7 @@ module.exports = class Snippets {
                         FROM Snippets WHERE folderId = ?`,
             param = [folderId]
             
-            this.db.all(query, param, (error, rows) => {
+            this.#db.all(query, param, (error, rows) => {
                 if (error) reject('Internal Server Error')
                 resolve(rows)
             })
@@ -170,7 +171,7 @@ module.exports = class Snippets {
                         FROM Snippets 
                         ORDER BY id DESC LIMIT 1`
 
-            this.db.get(query, [], (error, row) => {
+            this.#db.get(query, [], (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
@@ -189,7 +190,7 @@ module.exports = class Snippets {
             const sql = `UPDATE Snippets SET title = ?, code = ?, folderId = ?, languageId = ?, lastModified = DateTime('NOW') WHERE id = ?`,
                 params = [title, code, folderId, languageId, id]
             
-            this.db.run(sql, params, (error) => {
+            this.#db.run(sql, params, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Updated code snippet')
             })
@@ -202,7 +203,7 @@ module.exports = class Snippets {
             const sql = `DELETE FROM Snippets WHERE id = ?`,
                 param = [snippetId]
             
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Deleted code snippet.')
             })
@@ -215,7 +216,7 @@ module.exports = class Snippets {
             const sql = `UPDATE Snippets SET folderId = NULL, lastModified = DateTime('NOW') WHERE folderId = ?`,
                 param = [folderId]
             
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Updated snippets folder')
             })
@@ -228,7 +229,7 @@ module.exports = class Snippets {
             const sql = `UPDATE Snippets SET languageId = NULL, lastModified = DateTime('NOW') WHERE languageId = ?`,
                 param = [languageId]
             
-            this.db.run(sql, param, (error) => {
+            this.#db.run(sql, param, (error) => {
                 if (error) reject('Internal Server Error')
                 resolve('Updated snippets language')
             })
@@ -240,7 +241,7 @@ module.exports = class Snippets {
             // query
             const query = `SELECT COUNT(*) as count FROM Snippets`
 
-            this.db.get(query, [], (error, row) => {
+            this.#db.get(query, [], (error, row) => {
                 if (error) reject('Internal Server Error')
                 resolve (row)
             })
