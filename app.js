@@ -56,6 +56,4 @@ app.use(baseModel)
 // Include routes
 app.use(routes)
 
-app.listen(PORT, () => {
-    console.log(`Running on port ${PORT}`)
-})
+app.listen(PORT)
