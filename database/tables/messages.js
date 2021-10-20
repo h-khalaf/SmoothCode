@@ -1,3 +1,5 @@
+const ERROR_500 = 'Internal Server Error'
+
 module.exports = class Messages {
     #db
     constructor(db) {
@@ -17,7 +19,7 @@ module.exports = class Messages {
                 params = [name, email, message]
             
             this.#db.run(sql, params, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Message successfully sent')
             })
         })
@@ -28,7 +30,7 @@ module.exports = class Messages {
             const query = `SELECT * FROM Messages ORDER BY id DESC` // Latest first
 
             this.#db.all(query, [], (error, rows) => {
-                if(error) reject('Internal Server Error')
+                if(error) reject(ERROR_500)
                 resolve (rows)
             })
         })
@@ -41,7 +43,7 @@ module.exports = class Messages {
                 param = [id]
             
             this.#db.get(query, param, (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })
@@ -54,7 +56,7 @@ module.exports = class Messages {
                 param = [id]
     
             this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Message successfully deleted')
             })
         })
@@ -66,7 +68,7 @@ module.exports = class Messages {
             const query = `SELECT COUNT(*) AS count FROM Messages`
 
             this.#db.get(query, [], (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })

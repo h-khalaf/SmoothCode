@@ -129,7 +129,6 @@ folderRouter.post('/folder/delete', redirectIfNotLoggedIn, async (req, res) => {
     }
     
     try {
-        await db.snippets.setSnippetsFolderToNull(model.folder.id)
         await db.folders.deleteFolder(model.folder.id)
         res.redirect('/folders')
     } catch (error) {

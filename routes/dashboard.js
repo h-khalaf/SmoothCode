@@ -245,7 +245,6 @@ dashboardRouter.post('/language/delete', redirectIfNotLoggedIn, async (req, res)
     }
 
     try {
-        await db.snippets.setSnippetsLanguageToNull(model.language.id)
         await db.languages.deleteLanguage(model.language.id)
         res.redirect('/dashboard')
     } catch (error) {

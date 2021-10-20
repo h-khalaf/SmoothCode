@@ -1,3 +1,5 @@
+const ERROR_500 = 'Internal Server Error'
+
 module.exports = class Snippets {
     #db
     constructor(db) {
@@ -10,8 +12,11 @@ module.exports = class Snippets {
             languageId INT,
             postDate TEXT DEFAULT CURRENT_TIMESTAMP,
             lastModified TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (folderId) REFERENCES Folders(id),
-            FOREIGN KEY (languageId) REFERENCES Languages(id))`)
+            FOREIGN KEY (folderId) REFERENCES Folders(id)
+            ON DELETE SET NULL,
+            FOREIGN KEY (languageId) REFERENCES Languages(id)
+            ON DELETE SET NULL
+            )`)
     }
 
     insertSnippet(title, code, folder, language) {
@@ -27,7 +32,7 @@ module.exports = class Snippets {
                 params = [title, code, folderId, languageId] 
             
             this.#db.run(sql, params, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Added code snippet.')
             })
         })
@@ -43,7 +48,7 @@ module.exports = class Snippets {
             param = [snippetId]
 
             this.#db.get(query, param, (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })
@@ -58,7 +63,7 @@ module.exports = class Snippets {
                         FROM Snippets`
             
                 this.#db.all(query, [], (error, rows) => {
-                    if (error) reject('Internal Server Error')
+                    if (error) reject(ERROR_500)
                     resolve(rows)
                 })
         })
@@ -75,7 +80,7 @@ module.exports = class Snippets {
                 params = [limit, offset]
             
                 this.#db.all(query, params, (error, rows) => {
-                    if (error) reject('Internal Server Error')
+                    if (error) reject(ERROR_500)
                     resolve(rows)
                 })
         })
@@ -112,7 +117,7 @@ module.exports = class Snippets {
             }      
             
             this.#db.all(query, params, (error, rows) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve(rows)
             })
         })
@@ -140,7 +145,7 @@ module.exports = class Snippets {
             }      
             
             this.#db.get(query, params, (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve(row)
             })
         })
@@ -156,7 +161,7 @@ module.exports = class Snippets {
             param = [folderId]
             
             this.#db.all(query, param, (error, rows) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve(rows)
             })
         })
@@ -172,7 +177,7 @@ module.exports = class Snippets {
                         ORDER BY id DESC LIMIT 1`
 
             this.#db.get(query, [], (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })
@@ -191,7 +196,7 @@ module.exports = class Snippets {
                 params = [title, code, folderId, languageId, id]
             
             this.#db.run(sql, params, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Updated code snippet')
             })
         })
@@ -204,34 +209,8 @@ module.exports = class Snippets {
                 param = [snippetId]
             
             this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Deleted code snippet.')
-            })
-        })
-    }
-
-    setSnippetsFolderToNull(folderId) {
-        return new Promise((resolve, reject) => {
-            // sql & param
-            const sql = `UPDATE Snippets SET folderId = NULL, lastModified = DateTime('NOW') WHERE folderId = ?`,
-                param = [folderId]
-            
-            this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
-                resolve('Updated snippets folder')
-            })
-        })
-    }
-
-    setSnippetsLanguageToNull(languageId) {
-        return new Promise((resolve, reject) => {
-            // sql & param
-            const sql = `UPDATE Snippets SET languageId = NULL, lastModified = DateTime('NOW') WHERE languageId = ?`,
-                param = [languageId]
-            
-            this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
-                resolve('Updated snippets language')
             })
         })
     }
@@ -242,7 +221,7 @@ module.exports = class Snippets {
             const query = `SELECT COUNT(*) as count FROM Snippets`
 
             this.#db.get(query, [], (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })

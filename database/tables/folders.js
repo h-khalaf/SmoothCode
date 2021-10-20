@@ -1,3 +1,5 @@
+const ERROR_500 = 'Internal Server Error'
+
 module.exports = class Folders {
     #db
     constructor(db) {
@@ -14,7 +16,7 @@ module.exports = class Folders {
                 param = [name]
             
             this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Folder successfully created')
             })
         })
@@ -27,7 +29,7 @@ module.exports = class Folders {
                 param = [id]
             
             this.#db.get(query, param, (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })
@@ -41,7 +43,7 @@ module.exports = class Folders {
                 FROM Folders F`
 
             this.#db.all(query, [], (error, rows) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (rows)
             })
         })
@@ -54,7 +56,7 @@ module.exports = class Folders {
                 params = [name, id]
             
             this.#db.run(sql, params, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Folder successfully edited')
             })
         })
@@ -67,7 +69,7 @@ module.exports = class Folders {
                 param = [id]
     
             this.#db.run(sql, param, (error) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve('Folder successfully deleted')
             })
         })
@@ -79,7 +81,7 @@ module.exports = class Folders {
             const query = `SELECT COUNT(*) as count FROM Folders`
 
             this.#db.get(query, [], (error, row) => {
-                if (error) reject('Internal Server Error')
+                if (error) reject(ERROR_500)
                 resolve (row)
             })
         })
