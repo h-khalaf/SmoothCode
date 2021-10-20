@@ -1,4 +1,6 @@
-const ERROR_500 = 'Internal Server Error'
+const ERROR_500 = 'Internal Server Error',
+FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE = 'Either the selected language or folder have been removed',
+FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER = 19
 
 module.exports = class Snippets {
     #db
@@ -32,6 +34,7 @@ module.exports = class Snippets {
                 params = [title, code, folderId, languageId] 
             
             this.#db.run(sql, params, (error) => {
+                if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
                 if (error) reject(ERROR_500)
                 resolve('Added code snippet.')
             })
@@ -196,6 +199,7 @@ module.exports = class Snippets {
                 params = [title, code, folderId, languageId, id]
             
             this.#db.run(sql, params, (error) => {
+                if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
                 if (error) reject(ERROR_500)
                 resolve('Updated code snippet')
             })
