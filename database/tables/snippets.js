@@ -34,21 +34,23 @@ module.exports = class Snippets {
                 params = [title, code, folderId, languageId] 
             
             this.#db.run(sql, params, (error) => {
-                if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
-                if (error) reject(ERROR_500)
+                if(error) {
+                    if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
+                    else reject(ERROR_500)
+                }
                 resolve('Added code snippet.')
             })
         })
     }
 
-    getSnippet(snippetId) {
+    getSnippet(id) {
         return new Promise((resolve, reject) => {
             // query & param
             const query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
                         FROM Snippets WHERE id = ?`,
-            param = [snippetId]
+            param = [id]
 
             this.#db.get(query, param, (error, row) => {
                 if (error) reject(ERROR_500)
@@ -89,12 +91,12 @@ module.exports = class Snippets {
         })
     }
 
-    getSnippetsSearchResult(search, language, limit, offset) {
+    getSnippetsSearchResult(search, languageId, limit, offset) {
         return new Promise((resolve, reject) => {
 
             let query, params
 
-            if (language == "all") {
+            if (languageId == "all") {
                 query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
@@ -102,7 +104,7 @@ module.exports = class Snippets {
                         LIMIT ? OFFSET ?`       
                 params = ['%'+search+'%', limit, offset]
             
-            } else if (language == "unspecified") {
+            } else if (languageId == "unspecified") {
                 query = `SELECT  *,
                         (SELECT name FROM Folders WHERE id = Snippets.folderId) AS folder,
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
@@ -116,7 +118,7 @@ module.exports = class Snippets {
                         (SELECT name FROM Languages WHERE id = Snippets.languageId) AS language
                         FROM Snippets WHERE title LIKE ? AND languageId = ? ORDER BY id DESC
                         LIMIT ? OFFSET ?` 
-                params = ['%'+search+'%', language, limit, offset]
+                params = ['%'+search+'%', languageId, limit, offset]
             }      
             
             this.#db.all(query, params, (error, rows) => {
@@ -126,17 +128,17 @@ module.exports = class Snippets {
         })
     }
 
-    getSearchTotalItems(search, language) {
+    getSearchTotalItems(search, languageId) {
         return new Promise((resolve, reject) => {
             
             let query, params
             
-            if (language == "all") {
+            if (languageId == "all") {
                 query = `SELECT COUNT(id) AS count FROM Snippets
                         WHERE title LIKE ?`    
                 params = ['%'+search+'%']
 
-            } else if (language == "unspecified") {
+            } else if (languageId == "unspecified") {
                 query = `SELECT COUNT(id) AS count FROM Snippets 
                             WHERE title LIKE ? AND languageId IS NULL`
                 params = ['%'+search+'%']
@@ -144,7 +146,7 @@ module.exports = class Snippets {
             } else {
                 query = `SELECT COUNT(id) AS count FROM Snippets 
                             WHERE title LIKE ? AND languageId = ?`
-                params = ['%'+search+'%', language]
+                params = ['%'+search+'%', languageId]
             }      
             
             this.#db.get(query, params, (error, row) => {
@@ -186,21 +188,23 @@ module.exports = class Snippets {
         })
     }
 
-    updateSnippet(id, title, code, folder, language) {
+    updateSnippet(id, title, code, folderId, languageId) {
         return new Promise((resolve, reject) => {
             // Change to null if empty
-            let folderId = folder,
-                languageId = language
-            if (folderId == '') folderId = null
-            if (languageId == '') languageId = null
+            let folderID = folderId,
+                languageID = languageId
+            if (folderID == '') folderID = null
+            if (languageID == '') languageID = null
 
             // sql & params
             const sql = `UPDATE Snippets SET title = ?, code = ?, folderId = ?, languageId = ?, lastModified = DateTime('NOW') WHERE id = ?`,
-                params = [title, code, folderId, languageId, id]
+                params = [title, code, folderID, languageID, id]
             
             this.#db.run(sql, params, (error) => {
-                if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
-                if (error) reject(ERROR_500)
+                if(error) {
+                    if (error.errno == FOREIGN_KEY_CONSTRAINT_ERROR_NUMBER) reject(FOREIGN_KEY_CONSTRAINT_ERROR_MESSAGE)
+                    else reject(ERROR_500)
+                }
                 resolve('Updated code snippet')
             })
         })
