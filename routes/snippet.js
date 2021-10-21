@@ -126,6 +126,10 @@ snippetRouter.post('/snippet/add', redirectIfNotLoggedIn, validator.addSnippetVa
         try {
             model.folders = await db.folders.getAllFolders()
             model.languages = await db.languages.getAllLanguages()
+            // fetch preselected option values
+            model.preSelectedLanguage = await db.languages.getLanguage(model.languageId)
+            model.preSelectedFolder = await db.folders.getFolder(model.folderId)
+
         } catch (error) {
             model.errors.push(error)
         }
@@ -137,7 +141,13 @@ snippetRouter.post('/snippet/add', redirectIfNotLoggedIn, validator.addSnippetVa
         res.redirect('/dashboard')
     } catch (error) {
         model.errors.push(error)
-        console.log(model)
+        
+        model.folders = await db.folders.getAllFolders()
+        model.languages = await db.languages.getAllLanguages()
+        // fetch preselected option values
+        model.preSelectedLanguage = await db.languages.getLanguage(model.languageId)
+        model.preSelectedFolder = await db.folders.getFolder(model.folderId)
+
         res.render('add-snippet.hbs', model)
     }
 })
@@ -152,9 +162,10 @@ snippetRouter.get('/snippet/edit/:id', redirectIfNotLoggedIn, async (req, res) =
         const snippet = await db.snippets.getSnippet(snippetId)
         if (snippet === undefined) return res.render('404.hbs', {pageTitle: SNIPPET_NOT_FOUND_TITLE})
         
+        model.snippet = snippet
         model.folders = await db.folders.getAllFolders()
         model.languages = await db.languages.getAllLanguages()
-        model.snippet = snippet
+        
         res.render('edit-snippet.hbs', model)
     } catch (error) {
         model.errors.push(error)
@@ -181,6 +192,9 @@ snippetRouter.post('/snippet/edit', redirectIfNotLoggedIn, validator.snippetUpda
         try {
             model.languages = await db.languages.getAllLanguages()
             model.folders = await db.folders.getAllFolders()
+            // fetch preselected option values
+            model.preSelectedLanguage = await db.languages.getLanguage(model.snippet.language)
+            model.preSelectedFolder = await db.folders.getFolder(model.snippet.folder)
         } catch (error) {
             model.errors.push(error)
         }

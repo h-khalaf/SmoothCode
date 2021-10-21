@@ -16,6 +16,8 @@
 
                     <select name="language" id="languages" class="w-full absolute top-10 ">
                         <option value="">Unspecified</option>
+                        {{#if snippet.languageId}} <option selected value="{{snippet.languageId}}">{{snippet.language}} (Preselected)</option>{{/if}}
+                        {{#if preSelectedLanguage.id}} <option selected value="{{preSelectedLanguage.id}}">{{preSelectedLanguage.name}} (Preselected)</option>{{/if}}
                         {{#if languages}}
                             {{#each languages}}
                                 <option value="{{this.id}}">{{this.name}}</option>
@@ -29,6 +31,8 @@
 
                     <select name="folder" id="folders" class="w-full absolute top-10 ">
                         <option value="">-- Optional --</option>
+                        {{#if snippet.folderId}} <option selected value="{{snippet.folderId}}">{{snippet.folder}} (Preselected)</option>{{/if}}
+                        {{#if preSelectedFolder.id}} <option selected value="{{preSelectedFolder.id}}">{{preSelectedFolder.name}} (Preselected)</option>{{/if}}
                         {{#if folders}}
                             {{#each folders}}
                                 <option value="{{this.id}}">{{this.name}}</option>
