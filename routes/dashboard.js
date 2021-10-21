@@ -6,7 +6,7 @@ validator = require('../validator.js'),
 
 DASHBOARD_PAGE_TITLE = 'Dashboard',
 MESSAGES_PAGE_TITLE = 'Messages',
-DEFAULT_MESSAGE_PAGE_TITLE = 'Message',
+MESSAGE_PAGE_TITLE = 'Message',
 DELETE_MESSAGE_PAGE_TITLE = 'Delete message',
 MESSAGE_NOT_FOUND_TITLE = 'Message not found',
 ADD_LANGUAGE_PAGE_TITLE = 'Add language',
@@ -99,7 +99,7 @@ dashboardRouter.post('/message/delete', redirectIfNotLoggedIn, async (req, res) 
 
 dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
     const model = {
-        pageTitle: DEFAULT_MESSAGE_PAGE_TITLE,
+        pageTitle: MESSAGE_PAGE_TITLE,
         errors: []
     },
     messageId = req.params.id
@@ -107,6 +107,15 @@ dashboardRouter.get('/message/:id', redirectIfNotLoggedIn, async (req, res) => {
     try {
         const message = await db.messages.getMessage(messageId)
         if (message === undefined) return res.render('404.hbs', {pageTitle: MESSAGE_NOT_FOUND_TITLE})
+
+        if(message.readDate == null) {
+            await db.messages.setReadDate(messageId)
+            model.message = await db.messages.getMessage(messageId)
+        } else {
+            model.message = message
+        }
+        
+        res.render('message.hbs', model)
     } catch (error) {
         model.errors.push(error)
         res.render('message.hbs', model)

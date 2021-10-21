@@ -11,9 +11,10 @@
                     </li>
                     <li class="flex flex-col ml-1 mr-2 ">
                         <label for="languages" class="hidden">Language</label>
-                        <select name="language" id="languages" class="bg-white text-sm rounded p-1 border"> 
+                        <select name="languageId" id="languages" class="bg-white text-sm rounded p-1 border"> 
                             <option value="all">All Languages</option>
                             <option value="unspecified">Unspecified</option>
+                            {{#if preSelectedLanguage}} <option selected value="{{preSelectedLanguage.id}}">{{preSelectedLanguage.name}} (Preselected)</option>{{/if}}
                             {{#each languages}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                             {{/each}}

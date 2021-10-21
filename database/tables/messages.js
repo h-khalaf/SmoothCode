@@ -9,7 +9,8 @@ module.exports = class Messages {
             name TEXT NOT NULL,
             email TEXT NOT NULL,
             message TEXT NOT NULL,
-            postDate TEXT DEFAULT CURRENT_TIMESTAMP)`)
+            postDate TEXT DEFAULT CURRENT_TIMESTAMP,
+            readDate TEXT DEFAULT NULL)`)
     }
 
     insertMessage (name, email, message) {
@@ -48,6 +49,20 @@ module.exports = class Messages {
             })
         })
     }
+
+    setReadDate(id) {
+        return new Promise((resolve, reject) => {
+            // sql & param
+            const sql = `UPDATE Messages SET readDate = DateTime('NOW') WHERE id = ?`,
+                param = [id]
+    
+            this.#db.run(sql, param, (error) => {
+                if (error) reject(ERROR_500)
+                resolve('Message successfully deleted')
+            })
+        })
+    }
+
 
     deleteMessage(id) {
         return new Promise((resolve, reject) => {

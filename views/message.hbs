@@ -1,0 +1,23 @@
+<main>
+    <div class="container py-6">
+    {{#if message}}
+        <header class="p-2 mb-2 border-b flex flex-wrap justify-between items-center">
+            <h1 class="text-4xl">Message <span class="text-blue-500">#{{message.id}}</span></h1>
+            <a href="/message/delete/{{message.id}}" class="rounded p-2 mr-1 bg-red-500 text-white">Delete</a>
+        </header>
+        <div class="shadow bg-white rounded p-2 mb-2">
+            <p class="my-2">{{message.message}}</p>
+            <p class="text-sm mt-6"><b>By: </b>{{message.name}}
+                <span>&nbsp;(<a class="underline text-blue-500 overflow-x-auto" href="mailto:{{message.email}}">{{message.email}}</a>)</span>
+            </p>
+            
+            <p class="text-sm my-1"><b>Post Date: </b><time datetime="{{message.postDate}}">{{message.postDate}}</time></p>
+            {{#if message.readDate}}
+            <p class="text-sm my-1"><b>Read Date: </b><time datetime="{{message.readDate}}">{{message.readDate}}</time></p>
+            {{/if}}
+        </div>
+    {{else}}
+        {{> errors}}
+    {{/if}}
+    </div>
+</main>

@@ -5,17 +5,18 @@
             {{#if messages.length}}
             <ul>
                 {{#each messages}}
-                <li id="{{this.id}}" class="shadow bg-white rounded p-2 mb-2">
+                <li class="shadow bg-white rounded p-2 mb-2">
                     <div class="flex justify-between items-center">
                         <a href="#{{this.id}}" class="text-blue-500">#{{this.id}}</a>
                         <a href="/message/delete/{{this.id}}" class="rounded p-2 mr-1 bg-red-500 text-white ">Delete</a>
                     </div>
+                    <a href="/message/{{this.id}}" class="block py-2">
                     
-                    <p class="my-2">{{this.message}}</p>
-                    <p class="text-sm mt-6"><b>By: </b>{{this.name}}
-                        <span>&nbsp;(<a class="underline text-blue-500 overflow-x-auto" href="mailto:{{this.email}}">{{this.email}}</a>)</span>
-                    </p>
-                    <p class="text-sm my-1"><b>Date: </b><time datetime="{{this.postDate}}">{{this.postDate}}</time></p>
+                    <p class="my-2">Message sent <b><time datetime="{{this.postDate}}">{{this.postDate}}</time></b> by <b>{{this.name}}</b></p>
+                    {{#if this.readDate}}
+                    <p class="text-sm my-1"><b>Read Date: </b><time datetime="{{this.readDate}}">{{this.readDate}}</time></p>
+                    {{/if}}
+                    </a>
                 </li>
                 {{/each}}
             </ul>

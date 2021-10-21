@@ -17,15 +17,16 @@ snippetRouter.get('/snippets', async (req, res) => {
         pageLimit = 10
     
     try {
-        const {search, language} = req.query
+        const {search, languageId} = req.query
         let snippets, paginataion
         
         const languages = await db.languages.getAllLanguages()
+        const preSelectedLanguage = await db.languages.getLanguage(languageId)
 
-        if(search || language) { // Search
-            const totalItems = await db.snippets.getSearchTotalItems(search, language)
+        if(search || languageId) { // Search
+            const totalItems = await db.snippets.getSearchTotalItems(search, languageId)
             paginataion = paginate(currentPage, pageLimit, totalItems.count)
-            snippets = await db.snippets.getSnippetsSearchResult(search, language, paginataion.limit, paginataion.offset)
+            snippets = await db.snippets.getSnippetsSearchResult(search, languageId, paginataion.limit, paginataion.offset)
         } else {
             const totalItems = await db.snippets.countSnippets()
             paginataion = paginate(currentPage, pageLimit, totalItems.count)
@@ -39,6 +40,7 @@ snippetRouter.get('/snippets', async (req, res) => {
             prevPage: paginataion.prevPage,
             nextPage: paginataion.nextPage,
             languages: languages,
+            preSelectedLanguage: preSelectedLanguage,
             searchValue: search
         }
 
@@ -59,15 +61,16 @@ snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
     if (Number.isNaN(parseInt(currentPage))) return res.render('404.hbs', {pageTitle: PAGE_NOT_FOUND})
     
     try {
-        const {search, language} = req.query
+        const {search, languageId} = req.query
         let snippets, paginataion
-
+        
         const languages = await db.languages.getAllLanguages()
+        const preSelectedLanguage = await db.languages.getLanguage(languageId)
 
-        if(search || language) { // Search
-            const totalItems = await db.snippets.getSearchTotalItems(search, language)
+        if(search || languageId) { // Search
+            const totalItems = await db.snippets.getSearchTotalItems(search, languageId)
             paginataion = paginate(currentPage, pageLimit, totalItems.count)
-            snippets = await db.snippets.getSnippetsSearchResult(search, language, paginataion.limit, paginataion.offset)
+            snippets = await db.snippets.getSnippetsSearchResult(search, languageId, paginataion.limit, paginataion.offset)
         } else {
             const totalItems = await db.snippets.countSnippets()
             paginataion = paginate(currentPage, pageLimit, totalItems.count)
@@ -81,6 +84,7 @@ snippetRouter.get('/snippets/page/:currentPage', async (req, res) => {
             prevPage: paginataion.prevPage,
             nextPage: paginataion.nextPage,
             languages: languages,
+            preSelectedLanguage: preSelectedLanguage,
             searchValue: search
         }
 
