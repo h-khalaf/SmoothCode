@@ -21,17 +21,17 @@ module.exports = class Snippets {
             )`)
     }
 
-    insertSnippet(title, code, folder, language) {
+    insertSnippet(title, code, folderId, languageId) {
         return new Promise((resolve, reject) => {
             // Change to null if empty
-            let folderId = folder,
-                languageId = language
-            if (folderId == '') folderId = null
-            if (languageId == '') languageId = null
+            let folderID = folderId,
+                languageID = languageId
+            if (folderID == '') folderID = null
+            if (languageID == '') languageID = null
             
             // sql & params
             const sql = `INSERT INTO Snippets (title, code, folderId, languageId) VALUES (?, ?, ?, ?)`,
-                params = [title, code, folderId, languageId] 
+                params = [title, code, folderID, languageID] 
             
             this.#db.run(sql, params, (error) => {
                 if(error) {
